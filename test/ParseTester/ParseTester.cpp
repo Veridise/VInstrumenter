@@ -9,7 +9,11 @@ namespace ParseTest {
   }
 
   bool ParseTester::runTests() {
-    return testParse("Pre: started(ERC20.totalSupply(), this.totalSupply > 0)\nPost: finished(ERC20.totalSupply(), return == this.totalSupply)");
+    std::ifstream specfile ("/workspaces/VInstrumenter/example_specs/prepost1.spec");
+    std::string spec((std::istreambuf_iterator<char>(specfile)),
+                     (std::istreambuf_iterator<char>()));
+    return testParse(spec.c_str());
+    // return testParse("Pre: started(ERC20.totalSupply(), this.totalSupply > 0)\nPost: finished(ERC20.totalSupply(), return == this.totalSupply)");
   }
 
   bool ParseTester::testParse(const char *spec) {

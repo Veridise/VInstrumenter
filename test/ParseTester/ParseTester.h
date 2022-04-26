@@ -1,4 +1,6 @@
 #include <iostream>
+#include <fstream>
+#include <string>
 
 #include "antlr4-runtime.h"
 #include "TLexer.h"

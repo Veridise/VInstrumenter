@@ -57,14 +57,12 @@ FOREACH  : 'foreach' ;
 IN       : ':' ;
 
 VARS_LABEL : ('Vars:' | 'vars:' | 'Variables:' | 'variables:') ;       
-
 PRECOND_LABEL : ('Pre:' | 'pre:'| 'Preconditions:' | 'preconditions:') ;       
-
 POSTCOND_LABEL : ('Post:' | 'post:' | 'Postconditions:' | 'postconditions:') ;       
-
 INIT_LABEL : ('Init:' | 'init:' | 'Assume:' | 'assume:') ;       
-
 SPEC_LABEL : ('Spec:' | 'Specification:' | 'spec:' | 'specification:' | 'Assert:' | 'assert:') ;       
+LTLFAIR_LABEL : 'LTLFairness:' ;
+LTLPROP_LABEL : 'LTLProperty:' ;
 
 ATOM_LOC   : ('executed' | 'finished' | 'started' | 'reverted' | 'willSucceed') ;
 

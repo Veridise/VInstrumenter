@@ -23,7 +23,7 @@ namespace ParseTest {
         if (!testParse(spec.c_str())) {
           return false; // Unreachable at the moment
         }
-        std::cout << "----------------";
+        std::cout << "----------------\n";
       }
     }
     return true;

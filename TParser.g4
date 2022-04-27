@@ -71,12 +71,15 @@ void doAfter() {}
  * Spec Rules
  */
 
-spec : behavioralSpec | testSpec ;
+spec : behavioralSpec | testSpec | tempSpec ;
 
 behavioralSpec : varsSection? precondSection? postcondSection
                ;
 
 testSpec       : varsSection? initSection? specSection
+               ;
+
+tempSpec       : varsSection? ltlFairnessSection? ltlPropertySection
                ;
 
 /*
@@ -96,6 +99,13 @@ initSection : INIT_LABEL seqAtom
 
 specSection : SPEC_LABEL seqAtom
             ;
+
+ltlFairnessSection : LTLFAIR_LABEL smartltlAtom
+                   ;
+
+ltlPropertySection : LTLPROP_LABEL smartltlAtom
+                   ;
+
 
 /*
  * Sequence of atoms
@@ -121,11 +131,25 @@ typ        : IDENTIFIER
 /*
  * SmartLTL Rules
  */
+
+smartltlAtom : atom
+             | LPAREN smartltlAtom RPAREN
+             | T_UN smartltlAtom
+             | L_UN smartltlAtom
+             | LBRACK RBRACK smartltlAtom
+             | smartltlAtom T_BIN smartltlAtom
+             | smartltlAtom SEQ smartltlAtom
+             | smartltlAtom L_BIN smartltlAtom
+             ;
+
 atom        : ATOM_LOC LPAREN atomFn COMMA constraint RPAREN
             | ATOM_LOC LPAREN atomFn RPAREN
             | LET LPAREN ident ASSN LBRACK params RBRACK RPAREN
             | FOREACH LPAREN ident IN ident COMMA atom RPAREN
             | SENT LPAREN constraint RPAREN
+            | LPAREN atom RPAREN
+            | L_UN atom
+            | atom L_BIN atom
             ;
                
 atomFn      : atomFnName
@@ -149,6 +173,7 @@ constraint  : boolExpr
             ;
 
 boolExpr    : varOrNum
+            | L_UN boolExpr
             | LPAREN boolExpr RPAREN
             | arithExpr C_BIN arithExpr
             ;
@@ -159,7 +184,7 @@ arithExpr   : varOrNum
             | arithExpr A2_BIN arithExpr
             ;
 
-fnCall      : FSUM LPAREN atomFn COMMA varAccess COMMA constraint RPAREN
+fnCall      : FSUM LPAREN atomFn COMMA varOrNum COMMA constraint RPAREN
             | fnName LPAREN argList RPAREN
             ;
             

@@ -50,20 +50,27 @@ SENT :    'sent' ;
 FSUM :    'fsum' ;
 WILDCARD : '*' ;
 DOT      : '.' ;
+SEQ      : ';' ;
+ASSN     : ':=' ;
+LET      : 'let' ;
+FOREACH  : 'foreach' ;
+IN       : ':' ;
 
-VARS_LABEL : ('Vars:' | 'vars:') ;       
+VARS_LABEL : ('Vars:' | 'vars:' | 'Variables:' | 'variables:') ;       
 
-PRECOND_LABEL : ('Pre:' | 'pre:') ;       
+PRECOND_LABEL : ('Pre:' | 'pre:'| 'Preconditions:' | 'preconditions:') ;       
 
-POSTCOND_LABEL : ('Post:' | 'post:') ;       
+POSTCOND_LABEL : ('Post:' | 'post:' | 'Postconditions:' | 'postconditions:') ;       
+
+INIT_LABEL : ('Init:' | 'init:' | 'Assume:' | 'assume:') ;       
+
+SPEC_LABEL : ('Spec:' | 'Specification:' | 'spec:' | 'specification:' | 'Assert:' | 'assert:') ;       
 
 ATOM_LOC   : ('executed' | 'finished' | 'started' | 'reverted' | 'willSucceed') ;
 
-CON_BIN    : (';' | '&&' | '||') ;
+T_BIN      : ('U' | 'R' | '==>') ; // also includes ';' but already specified above
 
-T_BIN      : (';' | 'U' | 'R' | '==>') ;
-
-T_UN       : ('[]' | '<>' | 'X') ;
+T_UN       : ('<>' | 'X') ; // also includes '[]' but necessary in types also so specified above
 
 IDENTIFIER : [a-zA-Z_][a-zA-Z_0-9]* ;
 
@@ -79,7 +86,7 @@ L_BIN      : ('&&' | '||') ;
 
 L_UN       : '!' ;
 
-NUM        : [0-9]+ | [0-9]+ 'e' [0-9+] ;
+NUM        : ([0-9]+ | [0-9]+ 'e' [0-9]+) ;
 
 NEWLINE    : ('\r'? '\n' | '\r')+ -> skip ;
 

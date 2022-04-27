@@ -42,7 +42,7 @@ namespace ParseTest {
     TParser parser(&tokens);
     tree::ParseTree* tree = parser.spec();
 
-    std::cout << tree->toStringTree(&parser) << std::endl << std::endl;
+    // std::cout << tree->toStringTree(&parser) << std::endl << std::endl;
 
     return true;
   }

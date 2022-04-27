@@ -71,9 +71,12 @@ void doAfter() {}
  * Spec Rules
  */
 
-spec : behavioralSpec ;
+spec : behavioralSpec | testSpec ;
 
 behavioralSpec : varsSection? precondSection? postcondSection
+               ;
+
+testSpec       : varsSection? initSection? specSection
                ;
 
 /*
@@ -88,6 +91,20 @@ precondSection : PRECOND_LABEL atom
 postcondSection : POSTCOND_LABEL atom
                 ;
 
+initSection : INIT_LABEL seqAtom
+            ;
+
+specSection : SPEC_LABEL seqAtom
+            ;
+
+/*
+ * Sequence of atoms
+ */
+
+seqAtom : atom
+        | atom SEQ seqAtom
+        ;
+
 /*
  * Variable Section Rules
  */
@@ -97,6 +114,7 @@ declList    : typ ident
             ;
 
 typ        : IDENTIFIER
+           | IDENTIFIER LBRACK RBRACK
            ;
 
 
@@ -104,7 +122,9 @@ typ        : IDENTIFIER
  * SmartLTL Rules
  */
 atom        : ATOM_LOC LPAREN atomFn COMMA constraint RPAREN
-            | ATOM_LOC LPAREN atomFn RPAREN 
+            | ATOM_LOC LPAREN atomFn RPAREN
+            | LET LPAREN ident ASSN LBRACK params RBRACK RPAREN
+            | FOREACH LPAREN ident IN ident COMMA atom RPAREN
             | SENT LPAREN constraint RPAREN
             ;
                
@@ -119,18 +139,24 @@ atomFnName  : ident DOT ident
                
 params      : ident
             | ident COMMA params
+            | NUM
             | /*epsilon*/
             ; 
 
-constraint  : varOrNum
+constraint  : boolExpr
             | LPAREN constraint RPAREN
-            | A_UN constraint
-            | L_UN constraint
-            | constraint A1_BIN constraint
-            | constraint A2_BIN constraint
-            | constraint C_BIN constraint
             | constraint L_BIN constraint
-            | fnCall
+            ;
+
+boolExpr    : varOrNum
+            | LPAREN boolExpr RPAREN
+            | arithExpr C_BIN arithExpr
+            ;
+
+arithExpr   : varOrNum
+            | LPAREN arithExpr RPAREN
+            | arithExpr A1_BIN arithExpr
+            | arithExpr A2_BIN arithExpr
             ;
 
 fnCall      : FSUM LPAREN atomFn COMMA varAccess COMMA constraint RPAREN
@@ -158,6 +184,7 @@ num         : NUM
             ;
             
 varAccess   : ident
-            | varAccess LBRACK constraint RBRACK
+            | fnCall
+            | varAccess LBRACK arithExpr RBRACK
             | varAccess DOT ident
             ;

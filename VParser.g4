@@ -1,7 +1,7 @@
-parser grammar TParser;
+parser grammar VParser;
 
 options {
-	tokenVocab = TLexer;
+	tokenVocab = VLexer;
 }
 
 // These are all supported parser sections:

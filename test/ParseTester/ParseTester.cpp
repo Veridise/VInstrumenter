@@ -31,7 +31,7 @@ namespace ParseTest {
 
   bool ParseTester::testParse(const char *spec) {
     ANTLRInputStream input(spec);
-    TLexer lexer(&input);
+    VLexer lexer(&input);
     CommonTokenStream tokens(&lexer);
 
     // tokens.fill();
@@ -39,7 +39,7 @@ namespace ParseTest {
     //   std::cout << token->toString() << std::endl;
     // }
 
-    TParser parser(&tokens);
+    VParser parser(&tokens);
     tree::ParseTree* tree = parser.spec();
 
     // std::cout << tree->toStringTree(&parser) << std::endl << std::endl;

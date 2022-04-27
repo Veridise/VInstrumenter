@@ -3,8 +3,8 @@
 #include <string>
 
 #include "antlr4-runtime.h"
-#include "TLexer.h"
-#include "TParser.h"
+#include "VLexer.h"
+#include "VParser.h"
 #include "../Tester.h"
 
 using namespace Test;

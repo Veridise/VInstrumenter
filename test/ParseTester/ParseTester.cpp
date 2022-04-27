@@ -1,5 +1,9 @@
 #include "ParseTester.h"
+#define BOOST_NO_CXX11_SCOPED_ENUMS
+#include "boost/filesystem.hpp"
+#undef BOOST_NO_CXX11_SCOPED_ENUMS
 
+using namespace boost::filesystem;
 using namespace antlr4;
 using namespace antlrcpptest;
 
@@ -9,11 +13,24 @@ namespace ParseTest {
   }
 
   bool ParseTester::runTests() {
-    std::ifstream specfile ("/workspaces/VInstrumenter/example_specs/prepost1.spec");
-    std::string spec((std::istreambuf_iterator<char>(specfile)),
-                     (std::istreambuf_iterator<char>()));
-    return testParse(spec.c_str());
-    // return testParse("Pre: started(ERC20.totalSupply(), this.totalSupply > 0)\nPost: finished(ERC20.totalSupply(), return == this.totalSupply)");
+    directory_iterator end_itr;
+    for (directory_iterator itr ("/workspaces/VInstrumenter/example_specs"); itr != end_itr; ++itr) {
+      if (!is_directory(itr->status())) {
+
+        std::ifstream specfile (itr->path());
+        std::string spec((std::istreambuf_iterator<char>(specfile)),
+                         (std::istreambuf_iterator<char>()));
+        if (!testParse(spec.c_str())) {
+          return false;
+        }
+      }
+    }
+    return true;
+    // std::ifstream specfile ("/workspaces/VInstrumenter/example_specs/prepost1.spec");
+    // std::string spec((std::istreambuf_iterator<char>(specfile)),
+    //                  (std::istreambuf_iterator<char>()));
+    // return testParse(spec.c_str());
+    // // return testParse("Pre: started(ERC20.totalSupply(), this.totalSupply > 0)\nPost: finished(ERC20.totalSupply(), return == this.totalSupply)");
   }
 
   bool ParseTester::testParse(const char *spec) {
@@ -21,10 +38,10 @@ namespace ParseTest {
     TLexer lexer(&input);
     CommonTokenStream tokens(&lexer);
 
-    tokens.fill();
-    for (auto token : tokens.getTokens()) {
-      std::cout << token->toString() << std::endl;
-    }
+    // tokens.fill();
+    // for (auto token : tokens.getTokens()) {
+    //   std::cout << token->toString() << std::endl;
+    // }
 
     TParser parser(&tokens);
     tree::ParseTree* tree = parser.spec();

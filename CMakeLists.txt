@@ -46,9 +46,23 @@ include_directories(${ANTLR_SampleGrammarParser_OUTPUT_DIR})
 include_directories(${PROJECT_SOURCE_DIR}/test/
                     ${PROJECT_SOURCE_DIR}/test/ParseTester/
    )
+
+set(BOOST_ROOT ${BOOST_ROOT}) # either set it here or from the command line  
+set(Boost_USE_STATIC_LIBS OFF) 
+set(Boost_USE_MULTITHREADED ON)  
+set(Boost_USE_STATIC_RUNTIME OFF) 
+# find_package(Boost REQUIRED)
+find_package(Boost REQUIRED COMPONENTS filesystem)
+
+# # include boost
+# include_directories(${BOOST_ROOT})
+
 # add generated grammar to demo binary target
 add_executable(demo main.cpp
                test/ParseTester/ParseTester.cpp
                ${ANTLR_SampleGrammarLexer_CXX_OUTPUTS}
                ${ANTLR_SampleGrammarParser_CXX_OUTPUTS})
 target_link_libraries(demo antlr4_static)
+target_include_directories(demo PUBLIC ${Boost_INCLUDE_DIRS}) 
+target_link_libraries(demo ${Boost_LIBRARIES})
+target_link_libraries(demo Boost::filesystem)

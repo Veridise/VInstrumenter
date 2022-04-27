@@ -16,21 +16,17 @@ namespace ParseTest {
     directory_iterator end_itr;
     for (directory_iterator itr ("/workspaces/VInstrumenter/example_specs"); itr != end_itr; ++itr) {
       if (!is_directory(itr->status())) {
-
+        std::cout << "Testing " << itr->path() << "\n--------\n";
         std::ifstream specfile (itr->path());
         std::string spec((std::istreambuf_iterator<char>(specfile)),
                          (std::istreambuf_iterator<char>()));
         if (!testParse(spec.c_str())) {
-          return false;
+          return false; // Unreachable at the moment
         }
+        std::cout << "----------------";
       }
     }
     return true;
-    // std::ifstream specfile ("/workspaces/VInstrumenter/example_specs/prepost1.spec");
-    // std::string spec((std::istreambuf_iterator<char>(specfile)),
-    //                  (std::istreambuf_iterator<char>()));
-    // return testParse(spec.c_str());
-    // // return testParse("Pre: started(ERC20.totalSupply(), this.totalSupply > 0)\nPost: finished(ERC20.totalSupply(), return == this.totalSupply)");
   }
 
   bool ParseTester::testParse(const char *spec) {

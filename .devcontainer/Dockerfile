@@ -8,14 +8,9 @@ ARG CXX=/usr/bin/g++-10
 ENV CXX=/usr/bin/g++-10
 ARG CC=/usr/bin/gcc-10
 ENV CC=/usr/bin/gcc-10
-RUN apt -y install git curl default-jdk maven cmake pkg-config uuid-dev
-
-WORKDIR /usr/local
-RUN wget https://sourceforge.net/projects/boost/files/boost/1.77.0/boost_1_77_0.tar.gz/download -O boost.tar.gz
-RUN tar -xzf boost.tar.gz
-RUN rm boost.tar.gz
-ARG BOOST_ROOT=/usr/local/boost_1_77_0
-ENV BOOST_ROOT=/usr/local/boost_1_77_0
+RUN apt -y install git curl default-jdk maven cmake pkg-config uuid-dev libboostdev
+ARG BOOST_ROOT=/usr/include/boost
+ENV BOOST_ROOT=/usr/include/boost
 
 WORKDIR /usr/local/lib
 RUN curl -O https://www.antlr.org/download/antlr-4.10.1-complete.jar

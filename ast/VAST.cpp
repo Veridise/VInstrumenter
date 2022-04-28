@@ -10,7 +10,7 @@ namespace vast {
     return "";
   }
 
-  VBehavioralSpec::VBehavioralSpec(VVarDecl var_decs, VStatementExpr pre, VStatementExpr post) {
+  VBehavioralSpec::VBehavioralSpec(VVarDeclList *var_decs, VStatementExpr *pre, VStatementExpr *post) {
 
   }
 
@@ -18,31 +18,31 @@ namespace vast {
     return "";
   }
 
-  VTestSpec::VTestSpec(VVarDecl var_decs, vector<VStatementExpr> init, vector<VStatementExpr> spec) {
+  VTestSpec::VTestSpec(VVarDeclList *var_decs, vector<VStatementExpr*> init, vector<VStatementExpr*> spec) {
 
   }
   string VTestSpec::toJson() {
     return "";
   }
 
-  VTempSpec::VTempSpec(VVarDecl var_decs, VStatementExpr fairness, VStatementExpr spec) {
+  VTempSpec::VTempSpec(VVarDeclList *var_decs, VStatementExpr *fairness, VStatementExpr *spec) {
 
   }
   string VTempSpec::toJson() {
     return "";
   }
 
-  VVarDecl::VVarDecl(vector<tuple<VType, VVar>> vars) {
+  VVarDeclList::VVarDeclList(vector<VType*> typs, vector<VID*> vars) {
 
   }
-  string VVarDecl::toJson() {
+  string VVarDeclList::toJson() {
     return "";
   }
 
-  VVar::VVar(string name) {
+  VID::VID(string name) {
 
   }
-  string VVar::toJson() {
+  string VID::toJson() {
     return "";
   }
 
@@ -53,7 +53,7 @@ namespace vast {
     return "";
   }
 
-  VBinStatementExpr::VBinStatementExpr(VStatementExpr lhs, VStatementExpr RHS, VBinOp op) {
+  VBinStatementExpr::VBinStatementExpr(VStatementExpr *lhs, VStatementExpr *RHS, VBinOp *op) {
 
   }
   string VBinStatementExpr::toJson() {
@@ -67,7 +67,7 @@ namespace vast {
     return "";
   }
 
-  VUnStatementExpr::VUnStatementExpr(VStatementExpr con, VUnOp op) {
+  VUnStatementExpr::VUnStatementExpr(VStatementExpr *con, VUnOp *op) {
 
   }
   string VUnStatementExpr::toJson() {
@@ -88,42 +88,42 @@ namespace vast {
     return "";
   }
 
-  VExecutedStatement::VExecutedStatement(VFunctionID fun, VConstraintExpr con) {
+  VExecutedStatement::VExecutedStatement(VFunctionID *fun, VConstraintExpr *con) {
 
   }
   string VExecutedStatement::toJson() {
     return "";
   }
 
-  VFinishedStatement::VFinishedStatement(VFunctionID fun, VConstraintExpr con) {
+  VFinishedStatement::VFinishedStatement(VFunctionID *fun, VConstraintExpr *con) {
 
   }
   string VFinishedStatement::toJson() {
     return "";
   }
 
-  VStartedStatement::VStartedStatement(VFunctionID fun, VConstraintExpr con) {
+  VStartedStatement::VStartedStatement(VFunctionID *fun, VConstraintExpr *con) {
 
   }
   string VStartedStatement::toJson() {
     return "";
   }
 
-  VRevertedStatement::VRevertedStatement(VFunctionID fun, VConstraintExpr con) {
+  VRevertedStatement::VRevertedStatement(VFunctionID *fun, VConstraintExpr *con) {
 
   }
   string VRevertedStatement::toJson() {
     return "";
   }
 
-  VWillSucceedStatement::VWillSucceedStatement(VFunctionID fun, VConstraintExpr con) {
+  VWillSucceedStatement::VWillSucceedStatement(VFunctionID *fun, VConstraintExpr *con) {
 
   }
   string VWillSucceedStatement::toJson() {
     return "";
   }
 
-  VFunctionID::VFunctionID(string name, VArgList args) {
+  VFunctionID::VFunctionID(string name, VArgList *args) {
 
   }
 
@@ -131,56 +131,63 @@ namespace vast {
     return "";
   }
 
-  VArgList::VArgList(vector<VConstraintExpr> args) {
+  VArgList::VArgList(vector<VConstraintExpr*> args) {
 
   }
   string VArgList::toJson() {
     return "";
   }
 
-  VBinExpr::VBinExpr(VConstraintExpr lhs, VConstraintExpr RHS, VBinOp op) {
+  VBinExpr::VBinExpr(VConstraintExpr *lhs, VConstraintExpr *rhs, VBinOp *op) {
 
   }
   string VBinExpr::toJson() {
     return "";
   }
 
-  VUnExpr::VUnExpr(VConstraintExpr expr, VUnOp op) {
+  VUnExpr::VUnExpr(VConstraintExpr *expr, VUnOp *op) {
 
   }
   string VUnExpr::toJson() {
     return "";
   }
 
-  VVarExpr::VVarExpr(VVar var) {
+  VVarExpr::VVarExpr(VID *var) {
 
   }
   string VVarExpr::toJson() {
     return "";
   }
 
-  VFieldAccessExpr::VFieldAccessExpr(VConstraintExpr expr, string field) {
+  VConstExpr::VConstExpr(string val) {
+
+  }
+  string VConstExpr::toJson() {
+    return "";
+  }
+
+  VFieldAccessExpr::VFieldAccessExpr(VConstraintExpr *expr, VID *field) {
 
   }
   string VFieldAccessExpr::toJson() {
     return "";
   }
 
-  VArrAccessExpr::VArrAccessExpr(VConstraintExpr arr, VConstraintExpr idx) {
+  VArrAccessExpr::VArrAccessExpr(VConstraintExpr *arr, VConstraintExpr *idx) {
 
   }
   string VArrAccessExpr::toJson() {
     return "";
   }
 
-  VFuncCallExpr::VFuncCallExpr(string func, VArgList args) {
+  VFuncCallExpr::VFuncCallExpr(string func, VArgList *args) {
 
   }
   string VFuncCallExpr::toJson() {
     return "";
   }
 
-  VFSumExpr::VFSumExpr(VFunctionID func, VConstraintExpr con) {
+  VFSumExpr::VFSumExpr(VFunctionID *func, VConstraintExpr* arg, VConstraintExpr *con) {
 
   }
   string VFSumExpr::toJson() {

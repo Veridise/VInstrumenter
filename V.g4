@@ -97,6 +97,7 @@ atomFnName  : ident DOT ident
 params      : ident
             | ident COMMA params
             | NUM
+            | NUM COMMA params
             | /*epsilon*/
             ; 
 

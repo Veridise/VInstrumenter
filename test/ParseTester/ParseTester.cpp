@@ -2,7 +2,9 @@
 #define BOOST_NO_CXX11_SCOPED_ENUMS
 #include "boost/filesystem.hpp"
 #undef BOOST_NO_CXX11_SCOPED_ENUMS
+#include "../libs/json.hpp"
 
+using json = nlohmann::json;
 using namespace boost::filesystem;
 using namespace antlr4;
 using namespace vastvisitor;
@@ -45,6 +47,10 @@ namespace ParseTest {
 
     VASTVisitor visitor;
     VAST* ast = visitor.visitSpec(tree);
+
+    json ast_json = ast->toJson();
+
+    std::cout << ast_json;
 
     return true;
   }

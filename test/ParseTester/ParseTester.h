@@ -3,9 +3,10 @@
 #include <string>
 
 #include "antlr4-runtime.h"
-#include "VLexer.h"
-#include "VParser.h"
+#include "../../libs/VLexer.h"
+#include "../../libs/VParser.h"
 #include "../Tester.h"
+#include "../visitor/VASTVisitor.h"
 
 using namespace Test;
 

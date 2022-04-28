@@ -31,20 +31,31 @@ set(ANTLR_EXECUTABLE /usr/local/lib/antlr-4.10.1-complete.jar)
 find_package(ANTLR REQUIRED)
 
 # Call macro to add lexer and grammar to your build dependencies.
-antlr_target(SampleGrammarLexer VLexer.g4 LEXER
-             PACKAGE antlrcpptest)
-antlr_target(SampleGrammarParser VParser.g4 PARSER
-             PACKAGE antlrcpptest
-             DEPENDS_ANTLR SampleGrammarLexer
-             COMPILE_FLAGS -lib ${ANTLR_SampleGrammarLexer_OUTPUT_DIR})
+# antlr_target(VGrammarLexer VLexer.g4 LEXER
+#              OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/libs/)
+antlr_target(VGrammarParser V.g4 VISITOR
+             # DEPENDS_ANTLR VGrammarLexer
+             OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/libs/)
+
+# antlr_target(SampleGrammarLexer VLexer.g4 LEXER
+#              PACKAGE antlrcpptest)
+# antlr_target(SampleGrammarParser VParser.g4 PARSER
+#              PACKAGE antlrcpptest
+#              DEPENDS_ANTLR SampleGrammarLexer
+#              COMPILE_FLAGS -lib ${ANTLR_SampleGrammarLexer_OUTPUT_DIR})
+# antlr_target(SampleGrammarVisitor VParser.g4 VISITOR
+#              OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/libs/)
 
 # include generated files in project environment
-include_directories(${ANTLR_SampleGrammarLexer_OUTPUT_DIR})
-include_directories(${ANTLR_SampleGrammarParser_OUTPUT_DIR})
+# include_directories(${ANTLR_SampleGrammarLexer_OUTPUT_DIR})
+# include_directories(${ANTLR_SampleGrammarParser_OUTPUT_DIR})
 
 # add_subdirectory(test)
 include_directories(${PROJECT_SOURCE_DIR}/test/
                     ${PROJECT_SOURCE_DIR}/test/ParseTester/
+                    ${PROJECT_SOURCE_DIR}/ast/
+                    ${PROJECT_SOURCE_DIR}/visitor/
+                    ${PROJECT_SOURCE_DIR}/libs/
    )
 
 set(BOOST_ROOT ${BOOST_ROOT}) # either set it here or from the command line  
@@ -54,14 +65,18 @@ set(Boost_USE_STATIC_RUNTIME OFF)
 # find_package(Boost REQUIRED)
 find_package(Boost REQUIRED COMPONENTS filesystem)
 
-# # include boost
-# include_directories(${BOOST_ROOT})
+# include boost
+include_directories(${BOOST_ROOT})
 
 # add generated grammar to demo binary target
 add_executable(demo main.cpp
                test/ParseTester/ParseTester.cpp
-               ${ANTLR_SampleGrammarLexer_CXX_OUTPUTS}
-               ${ANTLR_SampleGrammarParser_CXX_OUTPUTS})
+               ast/VAST.cpp
+               visitor/VASTVisitor.cpp
+               # ${ANTLR_VGrammarLexer_CXX_OUTPUTS}
+               ${ANTLR_VGrammarParser_CXX_OUTPUTS})
+               # ${ANTLR_SampleGrammarLexer_CXX_OUTPUTS}
+               # ${ANTLR_SampleGrammarParser_CXX_OUTPUTS})
 target_link_libraries(demo antlr4_static)
 target_include_directories(demo PUBLIC ${Boost_INCLUDE_DIRS}) 
 target_link_libraries(demo ${Boost_LIBRARIES})

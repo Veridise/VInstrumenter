@@ -40,14 +40,10 @@ namespace ParseTest {
     // }
 
     VParser parser(&tokens);
-    tree::ParseTree* tree = parser.spec();
+    VParser::SpecContext* tree = parser.spec();
 
-    // VASTVisitor visitor;
-    // std::string res = visitor.visitSpec(tree).as<std::string>();
-
-    // std::cout << res;
-
-    // std::cout << tree->toStringTree(&parser) << std::endl << std::endl;
+    VASTVisitor visitor;
+    std::string res = visitor.visitSpec(tree);
 
     return true;
   }

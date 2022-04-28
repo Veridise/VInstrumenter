@@ -4,10 +4,12 @@
 #include "../libs/VParser.h"
 #include "../ast/VAST.h"
 
+using namespace std;
+
 namespace vastvisitor {
-  class VASTVisitor : VParserBaseVisitor {
+  class VASTVisitor {
   public:
-    antlrcpp::Any visitSpec(VParser::SpecContext *ctx);
+    string visitSpec(VParser::SpecContext *ctx);
   private:
   };
 }

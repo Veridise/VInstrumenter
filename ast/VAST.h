@@ -10,9 +10,9 @@ namespace vast {
     virtual string toJson() = 0;
   };
 
-  class VConstraint : VAST {
+  class VStatementExpr : VAST {
   public:
-    VConstraint();
+    VStatementExpr();
     string toJson() override;
   };
 
@@ -36,19 +36,19 @@ namespace vast {
 
   class VBehavioralSpec : VAST {
   public:
-    VBehavioralSpec(VVarDecl var_decs, VConstraint pre, VConstraint post);
+    VBehavioralSpec(VVarDecl var_decs, VStatementExpr pre, VStatementExpr post);
     string toJson() override;
   };
 
   class VTestSpec : VAST {
   public:
-    VTestSpec(VVarDecl var_decs, vector<VConstraint> init, vector<VConstraint> spec);
+    VTestSpec(VVarDecl var_decs, vector<VStatementExpr> init, vector<VStatementExpr> spec);
     string toJson() override;
   };
 
   class VTempSpec : VAST {
   public:
-    VTempSpec(VVarDecl var_decs, VConstraint fairness, VConstraint spec);
+    VTempSpec(VVarDecl var_decs, VStatementExpr fairness, VStatementExpr spec);
     string toJson() override;
   };
 
@@ -58,9 +58,9 @@ namespace vast {
     string toJson() override;
   };
 
-  class VBinConstraint : VConstraint {
+  class VBinStatementExpr : VStatementExpr {
   public:
-    VBinConstraint(VConstraint lhs, VConstraint RHS, VBinOp op);
+    VBinStatementExpr(VStatementExpr lhs, VStatementExpr RHS, VBinOp op);
     string toJson() override;
   };
 
@@ -70,26 +70,26 @@ namespace vast {
     string toJson() override;
   };
 
-  class VUnConstraint : VConstraint {
+  class VUnStatementExpr : VStatementExpr {
   public:
-    VUnConstraint(VConstraint con, VUnOp op);
+    VUnStatementExpr(VStatementExpr con, VUnOp op);
     string toJson() override;
   };
 
-  class VStatement : VConstraint {
+  class VStatement : VStatementExpr {
   public:
     virtual ~VStatement() = default;
   };
 
-  class VExpr : VAST {
+  class VConstraintExpr : VAST {
   public:
-    VExpr();
+    VConstraintExpr();
     string toJson() override;
   };
 
   class VArgList : VAST {
   public:
-    VArgList(vector<VExpr> args);
+    VArgList(vector<VConstraintExpr> args);
     string toJson() override;
   };
 
@@ -101,73 +101,73 @@ namespace vast {
 
   class VExecutedStatement : VStatement {
   public:
-    VExecutedStatement(VFunctionID fun, VExpr con);
+    VExecutedStatement(VFunctionID fun, VConstraintExpr con);
     string toJson() override;
   };
 
   class VFinishedStatement : VStatement {
   public:
-    VFinishedStatement(VFunctionID fun, VExpr con);
+    VFinishedStatement(VFunctionID fun, VConstraintExpr con);
     string toJson() override;
   };
 
   class VStartedStatement : VStatement {
   public:
-    VStartedStatement(VFunctionID fun, VExpr con);
+    VStartedStatement(VFunctionID fun, VConstraintExpr con);
     string toJson() override;
   };
 
   class VRevertedStatement : VStatement {
   public:
-    VRevertedStatement(VFunctionID fun, VExpr con);
+    VRevertedStatement(VFunctionID fun, VConstraintExpr con);
     string toJson() override;
   };
 
   class VWillSucceedStatement : VStatement {
   public:
-    VWillSucceedStatement(VFunctionID fun, VExpr con);
+    VWillSucceedStatement(VFunctionID fun, VConstraintExpr con);
     string toJson() override;
   };
 
-  class VBinExpr : VExpr {
+  class VBinExpr : VConstraintExpr {
   public:
-    VBinExpr(VExpr lhs, VExpr RHS, VBinOp op);
+    VBinExpr(VConstraintExpr lhs, VConstraintExpr RHS, VBinOp op);
     string toJson() override;
   };
 
-  class VUnExpr : VExpr {
+  class VUnExpr : VConstraintExpr {
   public:
-    VUnExpr(VExpr expr, VUnOp op);
+    VUnExpr(VConstraintExpr expr, VUnOp op);
     string toJson() override;
   };
 
-  class VVarExpr : VExpr {
+  class VVarExpr : VConstraintExpr {
   public:
     VVarExpr(VVar var);
     string toJson() override;
   };
 
-  class VFieldAccessExpr : VExpr {
+  class VFieldAccessExpr : VConstraintExpr {
   public:
-    VFieldAccessExpr(VExpr expr, string field);
+    VFieldAccessExpr(VConstraintExpr expr, string field);
     string toJson() override;
   };
 
-  class VArrAccessExpr : VExpr {
+  class VArrAccessExpr : VConstraintExpr {
   public:
-    VArrAccessExpr(VExpr arr, VExpr idx);
+    VArrAccessExpr(VConstraintExpr arr, VConstraintExpr idx);
     string toJson() override;
   };
 
-  class VFuncCallExpr : VExpr {
+  class VFuncCallExpr : VConstraintExpr {
   public:
     VFuncCallExpr(string func, VArgList args);
     string toJson() override;
   };
 
-  class VFSumExpr : VExpr {
+  class VFSumExpr : VConstraintExpr {
   public:
-    VFSumExpr(VFunctionID func, VConstraint con);
+    VFSumExpr(VFunctionID func, VConstraintExpr con);
     string toJson() override;
   };
 

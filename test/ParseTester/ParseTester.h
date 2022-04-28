@@ -1,3 +1,6 @@
+#ifndef VINSTRUMENTER_PARSETESTER_H
+#define VINSTRUMENTER_PARSETESTER_H
+
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -7,6 +10,7 @@
 #include "../../libs/VParser.h"
 #include "../Tester.h"
 #include "../visitor/VASTVisitor.h"
+#include "../ast/VAST.h"
 
 using namespace Test;
 
@@ -18,3 +22,5 @@ namespace ParseTest {
     bool testParse(const char *);
   };
 }
+
+#endif

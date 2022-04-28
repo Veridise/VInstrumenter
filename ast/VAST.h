@@ -1,3 +1,6 @@
+#ifndef VINSTRUMENTER_VAST_H
+#define VINSTRUMENTER_VAST_H
+
 #include <string>
 #include <vector>
 
@@ -172,3 +175,5 @@ namespace vast {
   };
 
 }
+
+#endif

@@ -1,9 +1,18 @@
 #include "VASTVisitor.h"
 
 using namespace std;
+using namespace vast;
 
 namespace vastvisitor {
-  string VASTVisitor::visitSpec(VParser::SpecContext *ctx) {
-    return "Hello World!\n";
+  VAST* VASTVisitor::visitSpec(VParser::SpecContext *ctx) {
+    if (ctx->behavioralSpec()) {
+      cout << "PREPOST\n";
+    } else if (ctx->testSpec()) {
+      cout << "TEST\n";
+    } else if (ctx->tempSpec()) {
+      cout << "LTL\n";
+    }
+
+    return nullptr;
   }
 }

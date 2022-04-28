@@ -1,3 +1,6 @@
+#ifndef VINSTRUMENTER_VASTVISITOR_H
+#define VINSTRUMENTER_VASTVISITOR_H
+
 #include <string>
 #include "antlr4-runtime.h"
 #include "../libs/VParserBaseVisitor.h"
@@ -5,11 +8,14 @@
 #include "../ast/VAST.h"
 
 using namespace std;
+using namespace vast;
 
 namespace vastvisitor {
   class VASTVisitor {
   public:
-    string visitSpec(VParser::SpecContext *ctx);
+    VAST* visitSpec(VParser::SpecContext *ctx);
   private:
   };
 }
+
+#endif

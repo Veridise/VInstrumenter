@@ -1,3 +1,6 @@
+#ifndef VINSTRUMENTER_TEST_H
+#define VINSTRUMENTER_TEST_H
+
 #include <iostream>
 
 #include "antlr4-runtime.h"
@@ -11,3 +14,5 @@ namespace Test {
     virtual bool runTests() = 0;
   };
 }
+
+#endif

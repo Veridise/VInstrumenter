@@ -6,6 +6,7 @@
 using namespace boost::filesystem;
 using namespace antlr4;
 using namespace vastvisitor;
+using namespace vast;
 
 namespace ParseTest {
   ParseTester::ParseTester() : Tester() {
@@ -43,7 +44,7 @@ namespace ParseTest {
     VParser::SpecContext* tree = parser.spec();
 
     VASTVisitor visitor;
-    std::string res = visitor.visitSpec(tree);
+    VAST* ast = visitor.visitSpec(tree);
 
     return true;
   }

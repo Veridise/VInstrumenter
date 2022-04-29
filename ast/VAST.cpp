@@ -5,7 +5,7 @@ using namespace std;
 
 namespace vast {
   VStatementExpr::VStatementExpr() {
-
+    // Placeholder only
   }
   json VStatementExpr::toJson() {
     return "";
@@ -24,13 +24,13 @@ namespace vast {
     json postJson = post->toJson();
     json total = {
       {"VBehavioralSpec", {
-          varsJson, preJson, postJson
+          {"var_decs", varsJson}, {"pre", preJson}, {"post", postJson}
         }}
     };
     return total;
   }
 
-  VTestSpec::VTestSpec(VVarDeclList *_var_decs, vector<VStatementExpr*> _init, vector<VStatementExpr*> _spec) {
+  VTestSpec::VTestSpec(VVarDeclList *_var_decs, vector<VStatementExpr*> *_init, vector<VStatementExpr*> *_spec) {
     var_decs = _var_decs;
     init = _init;
     spec = _spec;
@@ -39,16 +39,26 @@ namespace vast {
     json varsJson = {};
     if (var_decs != nullptr) varsJson = var_decs->toJson();
     vector<json> initJson;
-    for (VStatementExpr* s : init) {
+    for (VStatementExpr* s : *init) {
+      if (s == nullptr) {
+        // TODO Handle this case and remove!
+        cout << "WARNING: skipping let/foreach/sent! Should remove this...\n";
+        continue;
+      }
       initJson.push_back(s->toJson());
     }
     vector<json> specJson;
-    for (VStatementExpr* s : spec) {
+    for (VStatementExpr* s : *spec) {
+      if (s == nullptr) {
+        // TODO Handle this case and remove!
+        cout << "WARNING: skipping let/foreach/sent! Should remove this...\n";
+        continue;
+      }
       specJson.push_back(s->toJson());
     }
     json total = {
       {"VTestSpec", {
-          varsJson, initJson, specJson
+          {"var_decs", varsJson}, {"init", initJson}, {"spec", specJson}
         }}
     };
     return total;
@@ -60,6 +70,7 @@ namespace vast {
     spec = _spec;
   }
   json VTempSpec::toJson() {
+    return "";
     json varsJson = {};
     if (var_decs != nullptr) varsJson = var_decs->toJson();
     json fairnessJson = {};
@@ -67,7 +78,7 @@ namespace vast {
     json specJson = spec->toJson();
     json total = {
       {"VTempSpec", {
-          varsJson, fairnessJson, specJson
+          {"var_decs", varsJson}, {"fairness", fairnessJson}, {"spec", specJson}
         }}
     };
     return total;
@@ -100,7 +111,7 @@ namespace vast {
   }
   json VID::toJson() {
     json vidJson = {
-      {"VID", name}
+      {"VID", {{"name", name}}}
     };
     return vidJson;
   }
@@ -113,150 +124,285 @@ namespace vast {
     string typ_str = name;
     if (is_arr) typ_str = name + "[]";
     json vtypJson = {
-      {"VType", typ_str}
+      {"VType", {{"name", typ_str}}}
     };
     return vtypJson;
   }
 
-  VBinStatementExpr::VBinStatementExpr(VStatementExpr *lhs, VStatementExpr *RHS, VBinOp *op) {
-
+  VBinStatementExpr::VBinStatementExpr(VStatementExpr *_lhs, VStatementExpr *_rhs, VBinOp *_op) {
+    lhs = _lhs;
+    rhs = _rhs;
+    op = _op;
   }
   json VBinStatementExpr::toJson() {
-    return "";
+    json lhsJson = lhs->toJson();
+    json rhsJson = rhs->toJson();
+    json opJson = op->toJson();
+    json vBinStmtExprJson = {
+      {"VBinStatementExpr", {
+          {"lhs", lhsJson}, {"rhs", rhsJson}, {"op", opJson}
+        }}
+    };
+    return vBinStmtExprJson;
   }
 
-  VBinOp::VBinOp(string op) {
-
+  VBinOp::VBinOp(string _op) {
+    op = _op;
   }
   json VBinOp::toJson() {
-    return "";
+    json vBinOpJson = {{"VBinOp", {{"op", op}}}};
+    return vBinOpJson;
   }
 
-  VUnStatementExpr::VUnStatementExpr(VStatementExpr *con, VUnOp *op) {
-
+  VUnStatementExpr::VUnStatementExpr(VStatementExpr *_con, VUnOp *_op) {
+    con = _con;
+    op = _op;
   }
   json VUnStatementExpr::toJson() {
-    return "";
+    json exprJson = con->toJson();
+    json opJson = op->toJson();
+    json vUnStmtExprJson = {
+      {"VUnStatementExpr", {
+          {"expr", exprJson}, {"op", opJson}
+        }}
+    };
+    return vUnStmtExprJson;
   }
 
-  VUnOp::VUnOp(string op) {
-
+  VUnOp::VUnOp(string _op) {
+    op = _op;
   }
   json VUnOp::toJson() {
-    return "";
+    json vUnOpJson = {{"VUnOp", {{"op", op}}}};
+    return vUnOpJson;
   }
 
   VConstraintExpr::VConstraintExpr() {
-
+    // Placeholder only
   }
   json VConstraintExpr::toJson() {
     return "";
   }
 
-  VExecutedStatement::VExecutedStatement(VFunctionID *fun, VConstraintExpr *con) {
-
+  VExecutedStatement::VExecutedStatement(VFunctionID *_fun, VConstraintExpr *_con) {
+    fun = _fun;
+    con = _con;
   }
   json VExecutedStatement::toJson() {
-    return "";
+    json funJson = fun->toJson();
+    json conJson = {};
+    if (con != nullptr) conJson = con->toJson();
+    json vExecutedStmtJson = {
+      {"VExecutedStatementExpr", {
+          {"fun", funJson}, {"con", conJson}
+        }}
+    };
+    return vExecutedStmtJson;
   }
 
-  VFinishedStatement::VFinishedStatement(VFunctionID *fun, VConstraintExpr *con) {
-
+  VFinishedStatement::VFinishedStatement(VFunctionID *_fun, VConstraintExpr *_con) {
+    fun = _fun;
+    con = _con;
   }
   json VFinishedStatement::toJson() {
-    return "";
+    json funJson = fun->toJson();
+    json conJson = {};
+    if (con != nullptr) conJson = con->toJson();
+    json vFinishedStmtJson = {
+      {"VFinishedStatementExpr", {
+          {"fun", funJson}, {"con", conJson}
+        }}
+    };
+    return vFinishedStmtJson;
   }
 
-  VStartedStatement::VStartedStatement(VFunctionID *fun, VConstraintExpr *con) {
-
+  VStartedStatement::VStartedStatement(VFunctionID *_fun, VConstraintExpr *_con) {
+    fun = _fun;
+    con = _con;
   }
   json VStartedStatement::toJson() {
-    return "";
+    json funJson = fun->toJson();
+    json conJson = {};
+    if (con != nullptr) conJson = con->toJson();
+    json vStartedStmtJson = {
+      {"VStartedStatementExpr", {
+          {"fun", funJson}, {"con", conJson}
+        }}
+    };
+    return vStartedStmtJson;
   }
 
-  VRevertedStatement::VRevertedStatement(VFunctionID *fun, VConstraintExpr *con) {
-
+  VRevertedStatement::VRevertedStatement(VFunctionID *_fun, VConstraintExpr *_con) {
+    fun = _fun;
+    con = _con;
   }
   json VRevertedStatement::toJson() {
-    return "";
+    json funJson = fun->toJson();
+    json conJson = {};
+    if (con != nullptr) conJson = con->toJson();
+    json vRevertedStmtJson = {
+      {"VRevertedStatementExpr", {
+          {"fun", funJson}, {"con", conJson}
+        }}
+    };
+    return vRevertedStmtJson;
   }
 
-  VWillSucceedStatement::VWillSucceedStatement(VFunctionID *fun, VConstraintExpr *con) {
-
+  VWillSucceedStatement::VWillSucceedStatement(VFunctionID *_fun, VConstraintExpr *_con) {
+    fun = _fun;
+    con = _con;
   }
   json VWillSucceedStatement::toJson() {
-    return "";
+    json funJson = fun->toJson();
+    json conJson = {};
+    if (con != nullptr) conJson = con->toJson();
+    json vWillSucceedStmtJson = {
+      {"VWillSucceedStatementExpr", {
+          {"fun", funJson}, {"con", conJson}
+        }}
+    };
+    return vWillSucceedStmtJson;
   }
 
-  VFunctionID::VFunctionID(string name, VArgList *args) {
-
+  VFunctionID::VFunctionID(string _name, VArgList *_args) {
+    name = _name;
+    args = _args;
   }
 
   json VFunctionID::toJson() {
-    return "";
+    json argsJson = {};
+    if (args != nullptr) argsJson = args->toJson();
+    json vFunctionIDJson = {
+      {"VFunctionID", {
+          {"name", name}, {"args", argsJson}
+        }}
+    };
+    return vFunctionIDJson;
   }
 
-  VArgList::VArgList(vector<VConstraintExpr*> args) {
-
+  VArgList::VArgList(vector<VConstraintExpr*> _args) {
+    args = _args;
   }
   json VArgList::toJson() {
-    return "";
+    vector<json> argsJson;
+    for (VConstraintExpr* a : args) {
+      argsJson.push_back(a->toJson());
+    }
+    json vArgListJson = {
+      {"VArgList", {{"args", argsJson}}}
+    };
+    return vArgListJson;
   }
 
-  VBinExpr::VBinExpr(VConstraintExpr *lhs, VConstraintExpr *rhs, VBinOp *op) {
-
+  VBinExpr::VBinExpr(VConstraintExpr *_lhs, VConstraintExpr *_rhs, VBinOp *_op) {
+    lhs = _lhs;
+    rhs = _rhs;
+    op = _op;
   }
   json VBinExpr::toJson() {
-    return "";
+    json lhsJson = lhs->toJson();
+    json rhsJson = rhs->toJson();
+    json opJson = op->toJson();
+    json vBinExprJson = {
+      {"VBinExpr", {
+          {"lhs", lhsJson}, {"rhs", rhsJson}, {"op", opJson}
+        }}
+    };
+    return vBinExprJson;
   }
 
-  VUnExpr::VUnExpr(VConstraintExpr *expr, VUnOp *op) {
-
+  VUnExpr::VUnExpr(VConstraintExpr *_expr, VUnOp *_op) {
+    expr = _expr;
+    op = _op;
   }
   json VUnExpr::toJson() {
-    return "";
+    json exprJson = expr->toJson();
+    json opJson = op->toJson();
+    json vUnExprJson = {
+      {"VUnExpr", {
+          {"expr", exprJson}, {"op", opJson}
+        }}
+    };
+    return vUnExprJson;
   }
 
-  VVarExpr::VVarExpr(VID *var) {
-
+  VVarExpr::VVarExpr(VID *_var) {
+    var = _var;
   }
   json VVarExpr::toJson() {
-    return "";
+    json varJson = var->toJson();
+    json vVarExprJson = {
+      {"VVarExpr", {{"var", varJson}}}
+    };
+    return vVarExprJson;
   }
 
-  VConstExpr::VConstExpr(string val) {
-
+  VConstExpr::VConstExpr(string _val) {
+    val = _val;
   }
   json VConstExpr::toJson() {
-    return "";
+    return val;
   }
 
-  VFieldAccessExpr::VFieldAccessExpr(VConstraintExpr *expr, VID *field) {
-
+  VFieldAccessExpr::VFieldAccessExpr(VConstraintExpr *_expr, VID *_field) {
+    expr = _expr;
+    field = _field;
   }
   json VFieldAccessExpr::toJson() {
-    return "";
+    json exprJson = expr->toJson();
+    json fieldJson = field->toJson();
+    json vFieldAccessExprJson = {
+      {"VFieldAccessExpr", {
+          {"expr", exprJson}, {"field", fieldJson}
+        }}
+    };
+    return vFieldAccessExprJson;
   }
 
-  VArrAccessExpr::VArrAccessExpr(VConstraintExpr *arr, VConstraintExpr *idx) {
-
+  VArrAccessExpr::VArrAccessExpr(VConstraintExpr *_arr, VConstraintExpr *_idx) {
+    arr = _arr;
+    idx = _idx;
   }
   json VArrAccessExpr::toJson() {
-    return "";
+    json arrJson = arr->toJson();
+    json idxJson = idx->toJson();
+    json vArrAccessExprJson = {
+      {"VArrAccessExpr", {
+          {"arr", arrJson}, {"idx", idxJson}
+        }}
+    };
+    return vArrAccessExprJson;
   }
 
-  VFuncCallExpr::VFuncCallExpr(string func, VArgList *args) {
-
+  VFuncCallExpr::VFuncCallExpr(string _func, VArgList *_args) {
+    func = _func;
+    args = _args;
   }
   json VFuncCallExpr::toJson() {
-    return "";
+    json argsJson = args->toJson();
+    json vFuncCallExprJson = {
+      {"VFuncCallExpr", {
+          {"func", func}, {"args", argsJson}
+        }}
+    };
+    return vFuncCallExprJson;
   }
 
-  VFSumExpr::VFSumExpr(VFunctionID *func, VConstraintExpr* arg, VConstraintExpr *con) {
-
+  VFSumExpr::VFSumExpr(VFunctionID *_func, VConstraintExpr* _arg, VConstraintExpr *_con) {
+    func = _func;
+    arg = _arg;
+    con = _con;
   }
   json VFSumExpr::toJson() {
-    return "";
+    json funcJson = func->toJson();
+    json argJson = arg->toJson();
+    json conJson = con->toJson();
+    json vFSumExprJson = {
+      {"VFSumExpr", {
+          {"func", funcJson}, {"arg", argJson}, {"con", conJson}
+        }}
+    };
+    return vFSumExprJson;
   }
 
 }

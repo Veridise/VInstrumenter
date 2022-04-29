@@ -31,14 +31,14 @@ namespace vastvisitor {
 
   VTestSpec* VASTVisitor::visitTestSpec(VParser::TestSpecContext *ctx) {
     VVarDeclList* var_decs = nullptr;
-    vector<VStatementExpr*> init;
+    vector<VStatementExpr*> *init = new vector<VStatementExpr*>();
     if (ctx->varsSection()) {
       var_decs = visitVarsSection(ctx->varsSection());
     }
     if (ctx->initSection()) {
       init = visitInitSection(ctx->initSection());
     }
-    vector<VStatementExpr*> spec = visitSpecSection(ctx->specSection());
+    vector<VStatementExpr*> *spec = visitSpecSection(ctx->specSection());
     return new VTestSpec(var_decs, init, spec);
   }
 
@@ -59,11 +59,11 @@ namespace vastvisitor {
     return visitDeclList(ctx->declList());
   }
 
-  vector<VStatementExpr*> VASTVisitor::visitInitSection(VParser::InitSectionContext *ctx) {
+  vector<VStatementExpr*>* VASTVisitor::visitInitSection(VParser::InitSectionContext *ctx) {
     return visitSeqAtom(ctx->seqAtom());
   }
 
-  vector<VStatementExpr*> VASTVisitor::visitSpecSection(VParser::SpecSectionContext *ctx) {
+  vector<VStatementExpr*>* VASTVisitor::visitSpecSection(VParser::SpecSectionContext *ctx) {
     return visitSeqAtom(ctx->seqAtom());
   }
 
@@ -110,15 +110,15 @@ namespace vastvisitor {
     return nullptr;
   }
 
-  vector<VStatementExpr*> VASTVisitor::visitSeqAtom(VParser::SeqAtomContext *ctx) {
-    vector<VStatementExpr*> statements;
+  vector<VStatementExpr*>* VASTVisitor::visitSeqAtom(VParser::SeqAtomContext *ctx) {
+    vector<VStatementExpr*> *statements = new vector<VStatementExpr*>();
 
     VStatementExpr *s1 = visitAtom(ctx->atom());
-    statements.push_back(s1);
+    statements->push_back(s1);
 
     if (ctx->seqAtom()) {
-      vector<VStatementExpr*> rest = visitSeqAtom(ctx->seqAtom());
-      statements.insert(statements.end(), rest.begin(), rest.end());
+      vector<VStatementExpr*> *rest = visitSeqAtom(ctx->seqAtom());
+      statements->insert(statements->end(), rest->begin(), rest->end());
     }
 
     return statements;

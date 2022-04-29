@@ -4,7 +4,7 @@ grammar V;
  * Spec Rules
  */
 
-spec : behavioralSpec | testSpec | tempSpec ;
+spec : behavioralSpec EOF | testSpec EOF | tempSpec EOF;
 
 behavioralSpec : varsSection? precondSection? postcondSection
                ;

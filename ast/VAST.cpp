@@ -20,7 +20,7 @@ namespace vast {
     json varsJson = {};
     if (var_decs != nullptr) varsJson = var_decs->toJson();
     json preJson = {};
-    if (preJson != nullptr) preJson = pre->toJson();
+    if (pre != nullptr) preJson = pre->toJson();
     json postJson = post->toJson();
     json total = {
       {"VBehavioralSpec", {
@@ -70,11 +70,10 @@ namespace vast {
     spec = _spec;
   }
   json VTempSpec::toJson() {
-    return "";
     json varsJson = {};
     if (var_decs != nullptr) varsJson = var_decs->toJson();
     json fairnessJson = {};
-    if (fairnessJson != nullptr) fairnessJson = fairness->toJson();
+    if (fairness != nullptr) fairnessJson = fairness->toJson();
     json specJson = spec->toJson();
     json total = {
       {"VTempSpec", {

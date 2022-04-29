@@ -52,13 +52,13 @@ find_package(Boost REQUIRED COMPONENTS filesystem)
 # include boost
 include_directories(${BOOST_ROOT})
 
-# add generated grammar to demo binary target
-add_executable(demo main.cpp
+# add generated grammar to instrument binary target
+add_executable(instrument main.cpp
                test/ParseTester/ParseTester.cpp
                ast/VAST.cpp
                visitor/VASTVisitor.cpp
                ${ANTLR_VGrammarParser_CXX_OUTPUTS})
-target_link_libraries(demo antlr4_static)
-target_include_directories(demo PUBLIC ${Boost_INCLUDE_DIRS}) 
-target_link_libraries(demo ${Boost_LIBRARIES})
-target_link_libraries(demo Boost::filesystem)
+target_link_libraries(instrument antlr4_static)
+target_include_directories(instrument PUBLIC ${Boost_INCLUDE_DIRS}) 
+target_link_libraries(instrument ${Boost_LIBRARIES})
+target_link_libraries(instrument Boost::filesystem)

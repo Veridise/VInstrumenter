@@ -44,7 +44,7 @@ namespace vastvisitor {
 
   VTempSpec* VASTVisitor::visitTempSpec(VParser::TempSpecContext *ctx) {
     VVarDeclList* var_decs = nullptr;
-    VStatementExpr* fairness;
+    VStatementExpr* fairness = nullptr;
     if (ctx->varsSection()) {
       var_decs = visitVarsSection(ctx->varsSection());
     }

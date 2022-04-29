@@ -11,6 +11,8 @@
 #include "../Tester.h"
 #include "../visitor/VASTVisitor.h"
 #include "../ast/VAST.h"
+#include "boost/filesystem.hpp"
+#include "../libs/json.hpp"
 
 using namespace Test;
 

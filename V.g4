@@ -4,7 +4,7 @@ grammar V;
  * Spec Rules
  */
 
-spec : behavioralSpec EOF | testSpec EOF | tempSpec EOF;
+spec : behavioralSpec EOF | testSpec EOF | tempSpec EOF | invariantSpec EOF ;
 
 behavioralSpec : varsSection? precondSection? postcondSection
                ;
@@ -13,6 +13,9 @@ testSpec       : varsSection? initSection? specSection
                ;
 
 tempSpec       : varsSection? ltlFairnessSection? ltlPropertySection
+               ;
+
+invariantSpec  : varsSection? invariantSection
                ;
 
 /*
@@ -39,6 +42,8 @@ ltlFairnessSection : LTLFAIR_LABEL smartltlAtom
 ltlPropertySection : LTLPROP_LABEL smartltlAtom
                    ;
 
+invariantSection : INV_LABEL invAtom
+                 ;
 
 /*
  * Sequence of atoms
@@ -71,9 +76,14 @@ smartltlAtom : atom
              | L_UN smartltlAtom
              | LBRACK RBRACK smartltlAtom
              | smartltlAtom T_BIN smartltlAtom
+             | smartltlAtom IMP smartltlAtom
              | smartltlAtom SEQ smartltlAtom
              | smartltlAtom L_BIN smartltlAtom
              ;
+
+invAtom     : atom
+            | CONTRACT_INV LPAREN constraint RPAREN
+            ;
 
 atom        : ATOM_LOC LPAREN atomFn COMMA constraint RPAREN
             | ATOM_LOC LPAREN atomFn RPAREN
@@ -104,6 +114,7 @@ params      : ident
 constraint  : boolExpr
             | LPAREN constraint RPAREN
             | constraint L_BIN constraint
+            | constraint IMP constraint
             ;
 
 boolExpr    : varOrNum
@@ -174,10 +185,13 @@ INIT_LABEL : ('Init:' | 'init:' | 'Assume:' | 'assume:') ;
 SPEC_LABEL : ('Spec:' | 'Specification:' | 'spec:' | 'specification:' | 'Assert:' | 'assert:') ;       
 LTLFAIR_LABEL : 'LTLFairness:' ;
 LTLPROP_LABEL : 'LTLProperty:' ;
+INV_LABEL : ('Inv:' | 'inv:' | 'Invariant:' | 'invariant:') ;
 
-ATOM_LOC   : ('executed' | 'finished' | 'started' | 'reverted' | 'willSucceed') ;
+ATOM_LOC     : ('executed' | 'finished' | 'started' | 'reverted' | 'willSucceed') ;
+CONTRACT_INV : 'Cinv' ;
 
-T_BIN      : ('U' | 'R' | '==>') ; // also includes ';' but already specified above
+IMP        : '==>' ;
+T_BIN      : ('U' | 'R') ; // also includes ';' and '==>' but already specified above
 T_UN       : ('<>' | 'X') ; // also includes '[]' but necessary in types also so specified above
 
 IDENTIFIER : [a-zA-Z_][a-zA-Z_0-9]* ;

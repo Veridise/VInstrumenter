@@ -72,6 +72,14 @@ namespace vast {
     json toJson() override;
   };
 
+  class VInvSpec : public VAST {
+  public:
+    VInvSpec(VVarDeclList *_var_decs, VStatementExpr *_inv);
+    VVarDeclList *var_decs;
+    VStatementExpr *inv;
+    json toJson() override;
+  };
+
   class VBinOp : public VAST {
   public:
     VBinOp(string _op);

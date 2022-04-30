@@ -83,6 +83,22 @@ namespace vast {
     return total;
   }
 
+  VInvSpec::VInvSpec(VVarDeclList *_var_decs, VStatementExpr *_inv) {
+    var_decs = _var_decs;
+    inv = _inv;
+  }
+  json VInvSpec::toJson() {
+    json varsJson = {};
+    if (var_decs != nullptr) varsJson = var_decs->toJson();
+    json invJson = inv->toJson();
+    json total = {
+      {"VInvSpec", {
+          {"var_decs", varsJson}, {"inv", invJson}
+        }}
+    };
+    return total;
+  }
+
   VVarDeclList::VVarDeclList(vector<VType*> _typs, vector<VID*> _vars) {
     typs = _typs;
     vars = _vars;

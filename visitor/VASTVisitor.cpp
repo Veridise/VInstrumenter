@@ -11,6 +11,8 @@ namespace vastvisitor {
       return visitTestSpec(ctx->testSpec());
     } else if (ctx->tempSpec()) {
       return visitTempSpec(ctx->tempSpec());
+    } else if (ctx->invariantSpec()) {
+      return visitInvariantSpec(ctx->invariantSpec());
     }
 
     return nullptr;
@@ -55,6 +57,15 @@ namespace vastvisitor {
     return new VTempSpec(var_decs, fairness, prop);
   }
 
+  VInvSpec* VASTVisitor::visitInvariantSpec(VParser::InvariantSpecContext *ctx) {
+    VVarDeclList* var_decs = nullptr;
+    if (ctx->varsSection()) {
+      var_decs = visitVarsSection(ctx->varsSection());
+    }
+    VStatementExpr* inv = visitInvariantSection(ctx->invariantSection());
+    return new VInvSpec(var_decs, inv);
+  }
+
   VVarDeclList* VASTVisitor::visitVarsSection(VParser::VarsSectionContext *ctx) {
     return visitDeclList(ctx->declList());
   }
@@ -75,6 +86,21 @@ namespace vastvisitor {
     return visitSmartltlAtom(ctx->smartltlAtom());
   }
 
+  VStatementExpr* VASTVisitor::visitInvariantSection(VParser::InvariantSectionContext *ctx) {
+    return visitInvAtom(ctx->invAtom());
+  }
+
+  VStatementExpr* VASTVisitor::visitInvAtom(VParser::InvAtomContext *ctx) {
+    if (ctx->CONTRACT_INV()) {
+      // Contract invariant is syntactic sugar for finished w/ wildcard
+      VFunctionID* fun = new VFunctionID("*", nullptr);
+      VConstraintExpr *con = visitConstraint(ctx->constraint());
+      return new VFinishedStatement(fun, con);
+    }
+
+    return visitAtom(ctx->atom());
+  }
+
   VStatementExpr* VASTVisitor::visitSmartltlAtom(VParser::SmartltlAtomContext *ctx) {
     if (ctx->atom()) {
       return visitAtom(ctx->atom());
@@ -90,6 +116,9 @@ namespace vastvisitor {
         return new VUnStatementExpr(s1, op);
       } else if (ctx->LBRACK()) {
         VUnOp *op = new VUnOp("[]");
+        return new VUnStatementExpr(s1, op);
+      } else if (ctx->IMP()) {
+        VUnOp *op = new VUnOp("==>");
         return new VUnStatementExpr(s1, op);
       } else if (ctx->smartltlAtom().size() == 2) {
         VStatementExpr* s2 = visitSmartltlAtom(ctx->smartltlAtom()[1]);
@@ -266,7 +295,11 @@ namespace vastvisitor {
       VConstraintExpr* c1 = visitConstraint(ctx->constraint()[0]);
       if (ctx->constraint().size() == 2) {
         VConstraintExpr* c2 = visitConstraint(ctx->constraint()[1]);
-        VBinOp *op = new VBinOp(ctx->L_BIN()->getText());
+        string op_str = "==>";
+        if (ctx->L_BIN()) {
+          op_str = ctx->L_BIN()->getText();
+        }
+        VBinOp *op = new VBinOp(op_str);
         return new VBinExpr(c1, c2, op);
       }
 

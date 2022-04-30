@@ -1,1 +1,1 @@
-inv: Cinv(address(this).balance == sum(balances))
+inv: Cinv(address(this).balance = sum(balances))

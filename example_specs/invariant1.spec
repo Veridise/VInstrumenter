@@ -1,1 +1,1 @@
-invariant: finished(*, address(this).balance == sum(balances))
+invariant: finished(*, address(this).balance = sum(balances))

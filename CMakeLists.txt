@@ -1,5 +1,6 @@
 # minimum required CMAKE version
 CMAKE_MINIMUM_REQUIRED(VERSION 3.7 FATAL_ERROR)
+project(VInstrument)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
@@ -26,7 +27,11 @@ include_directories(${ANTLR4_INCLUDE_DIRS})
 
 # set variable pointing to the antlr tool that supports C++
 # this is not required if the jar file can be found under PATH environment
-set(ANTLR_EXECUTABLE /usr/local/lib/antlr-4.10.1-complete.jar)
+if(DEFINED ENV{ANTLR_EXECUTABLE})
+    set(ANTLR_EXECUTABLE $ENV{ANTLR_EXECUTABLE})
+else()
+    set(ANTLR_EXECUTABLE /usr/local/lib/antlr-4.10.1-complete.jar)
+endif()
 # add macros to generate ANTLR Cpp code from grammar
 find_package(ANTLR REQUIRED)
 

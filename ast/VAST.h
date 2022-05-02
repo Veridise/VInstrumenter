@@ -63,10 +63,10 @@ namespace vast {
 
   class VTestSpec : public VAST {
   public:
-    VTestSpec(VVarDeclList *_var_decs, vector<VStatementExpr*> *_init, vector<VStatementExpr*> *_spec);
+    VTestSpec(VVarDeclList *_var_decs, VStatementExpr *_init, VStatementExpr *_spec);
     VVarDeclList *var_decs;
-    vector<VStatementExpr*> *init;
-    vector<VStatementExpr*> *spec;
+    VStatementExpr *init;
+    VStatementExpr *spec;
     json toJson() override;
   };
 

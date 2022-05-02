@@ -30,7 +30,7 @@ namespace vast {
     return total;
   }
 
-  VTestSpec::VTestSpec(VVarDeclList *_var_decs, vector<VStatementExpr*> *_init, vector<VStatementExpr*> *_spec) {
+  VTestSpec::VTestSpec(VVarDeclList *_var_decs, VStatementExpr *_init, VStatementExpr *_spec) {
     var_decs = _var_decs;
     init = _init;
     spec = _spec;
@@ -38,24 +38,9 @@ namespace vast {
   json VTestSpec::toJson() {
     json varsJson = {};
     if (var_decs != nullptr) varsJson = var_decs->toJson();
-    vector<json> initJson;
-    for (VStatementExpr* s : *init) {
-      if (s == nullptr) {
-        // TODO Handle this case and remove!
-        cout << "WARNING: skipping let/foreach/sent! Should remove this...\n";
-        continue;
-      }
-      initJson.push_back(s->toJson());
-    }
-    vector<json> specJson;
-    for (VStatementExpr* s : *spec) {
-      if (s == nullptr) {
-        // TODO Handle this case and remove!
-        cout << "WARNING: skipping let/foreach/sent! Should remove this...\n";
-        continue;
-      }
-      specJson.push_back(s->toJson());
-    }
+    json initJson = {};
+    if (init != nullptr) initJson = init->toJson();
+    json specJson = spec->toJson();
     json total = {
       {"VTestSpec", {
           {"var_decs", varsJson}, {"init", initJson}, {"spec", specJson}

@@ -19,14 +19,14 @@ namespace vastvisitor {
     VTempSpec* visitTempSpec(VParser::TempSpecContext *ctx);
     VInvSpec* visitInvariantSpec(VParser::InvariantSpecContext *ctx);
     VVarDeclList* visitVarsSection(VParser::VarsSectionContext *ctx);
-    vector<VStatementExpr*>* visitInitSection(VParser::InitSectionContext *ctx);
-    vector<VStatementExpr*>* visitSpecSection(VParser::SpecSectionContext *ctx);
+    VStatementExpr* visitInitSection(VParser::InitSectionContext *ctx);
+    VStatementExpr* visitSpecSection(VParser::SpecSectionContext *ctx);
     VStatementExpr* visitLtlFairnessSection(VParser::LtlFairnessSectionContext *ctx);
     VStatementExpr* visitLtlPropertySection(VParser::LtlPropertySectionContext *ctx);
     VStatementExpr* visitInvariantSection(VParser::InvariantSectionContext *ctx);
     VStatementExpr* visitInvAtom(VParser::InvAtomContext *ctx);
     VStatementExpr* visitSmartltlAtom(VParser::SmartltlAtomContext *ctx);
-    vector<VStatementExpr*>* visitSeqAtom(VParser::SeqAtomContext *ctx);
+    VStatementExpr* visitSeqAtom(VParser::SeqAtomContext *ctx);
     VVarDeclList* visitDeclList(VParser::DeclListContext *ctx);
     VType* visitTyp(VParser::TypContext *ctx);
     VID* visitIdent(VParser::IdentContext *ctx);

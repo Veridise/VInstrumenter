@@ -33,14 +33,14 @@ namespace vastvisitor {
 
   VTestSpec* VASTVisitor::visitTestSpec(VParser::TestSpecContext *ctx) {
     VVarDeclList* var_decs = nullptr;
-    vector<VStatementExpr*> *init = new vector<VStatementExpr*>();
+    VStatementExpr *init = nullptr;
     if (ctx->varsSection()) {
       var_decs = visitVarsSection(ctx->varsSection());
     }
     if (ctx->initSection()) {
       init = visitInitSection(ctx->initSection());
     }
-    vector<VStatementExpr*> *spec = visitSpecSection(ctx->specSection());
+    VStatementExpr *spec = visitSpecSection(ctx->specSection());
     return new VTestSpec(var_decs, init, spec);
   }
 
@@ -70,11 +70,11 @@ namespace vastvisitor {
     return visitDeclList(ctx->declList());
   }
 
-  vector<VStatementExpr*>* VASTVisitor::visitInitSection(VParser::InitSectionContext *ctx) {
+  VStatementExpr* VASTVisitor::visitInitSection(VParser::InitSectionContext *ctx) {
     return visitSeqAtom(ctx->seqAtom());
   }
 
-  vector<VStatementExpr*>* VASTVisitor::visitSpecSection(VParser::SpecSectionContext *ctx) {
+  VStatementExpr* VASTVisitor::visitSpecSection(VParser::SpecSectionContext *ctx) {
     return visitSeqAtom(ctx->seqAtom());
   }
 
@@ -139,18 +139,16 @@ namespace vastvisitor {
     return nullptr;
   }
 
-  vector<VStatementExpr*>* VASTVisitor::visitSeqAtom(VParser::SeqAtomContext *ctx) {
-    vector<VStatementExpr*> *statements = new vector<VStatementExpr*>();
-
+  VStatementExpr* VASTVisitor::visitSeqAtom(VParser::SeqAtomContext *ctx) {
     VStatementExpr *s1 = visitAtom(ctx->atom());
-    statements->push_back(s1);
 
     if (ctx->seqAtom()) {
-      vector<VStatementExpr*> *rest = visitSeqAtom(ctx->seqAtom());
-      statements->insert(statements->end(), rest->begin(), rest->end());
+      VStatementExpr *s2 = visitSeqAtom(ctx->seqAtom());
+      VBinOp *op = new VBinOp(ctx->SEQ()->getText());
+      return new VBinStatementExpr(s1, s2, op);
     }
 
-    return statements;
+    return s1;
   }
 
   VVarDeclList* VASTVisitor::visitDeclList(VParser::DeclListContext *ctx) {

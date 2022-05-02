@@ -99,23 +99,31 @@ namespace vast {
     return total;
   }
 
-  VVarDeclList::VVarDeclList(vector<VType*> _typs, vector<VID*> _vars) {
-    typs = _typs;
-    vars = _vars;
+  VVarDeclList::VVarDeclList(vector<VVarDecl*> _var_decs) {
+    var_decs = _var_decs;
   }
   json VVarDeclList::toJson() {
-    vector<json> typsJson;
-    for (VType* t : typs) {
-      typsJson.push_back(t->toJson());
-    }
-    vector<json> varsJson;
-    for (VID* v : vars) {
-      varsJson.push_back(v->toJson());
+    vector<json> varDecsJson;
+    for (VVarDecl* v : var_decs) {
+      varDecsJson.push_back(v->toJson());
     }
     json declJson = {
       {"VVarDeclList", {
-          {"typs", typsJson},
-          {"vars", varsJson}
+          {"var_decs", varDecsJson}
+        }}
+    };
+    return declJson;
+  }
+
+  VVarDecl::VVarDecl(VType* _typ, VID* _var) {
+    typ = _typ;
+    var = _var;
+  }
+  json VVarDecl::toJson() {
+    json declJson = {
+      {"VVarDecl", {
+          {"typ", typ->toJson()},
+          {"var", var->toJson()}
         }}
     };
     return declJson;

@@ -154,21 +154,19 @@ namespace vastvisitor {
   }
 
   VVarDeclList* VASTVisitor::visitDeclList(VParser::DeclListContext *ctx) {
-    vector<VType*> typs;
-    vector<VID*> vars;
+    vector<VVarDecl*> var_decs;
     VType *typ = visitTyp(ctx->typ());
     VID *var = visitIdent(ctx->ident());
 
-    typs.push_back(typ);
-    vars.push_back(var);
+    VVarDecl *var_dec = new VVarDecl(typ, var);
+    var_decs.push_back(var_dec);
 
     if (ctx->declList()) {
       VVarDeclList *restDecs = visitDeclList(ctx->declList());
-      typs.insert(typs.end(), restDecs->typs.begin(), restDecs->typs.end());
-      vars.insert(vars.end(), restDecs->vars.begin(), restDecs->vars.end());
+      var_decs.insert(var_decs.end(), restDecs->var_decs.begin(), restDecs->var_decs.end());
     }
 
-    return new VVarDeclList(typs, vars);
+    return new VVarDeclList(var_decs);
   }
 
   VType* VASTVisitor::visitTyp(VParser::TypContext *ctx) {

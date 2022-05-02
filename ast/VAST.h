@@ -37,12 +37,19 @@ namespace vast {
     json toJson() override;
   };
 
+  class VVarDecl : public VAST {
+  public:
+    VVarDecl(VType* _typ, VID* _var);
+    json toJson() override;
+    VType* typ;
+    VID* var;
+  };
+
   class VVarDeclList : public VAST {
   public:
-    VVarDeclList(vector<VType*> _typs, vector<VID*> _vars);
+    VVarDeclList(vector<VVarDecl*> _var_decs);
     json toJson() override;
-    vector<VType*> typs;
-    vector<VID*> vars;
+    vector<VVarDecl*> var_decs;
   };
 
   class VBehavioralSpec : public VAST {

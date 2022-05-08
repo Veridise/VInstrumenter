@@ -1,7 +1,7 @@
 Vars: address alice, address bob, address charlie, address david, TheRewarderPool rewarder, FlashLoanerPool loaner, RewardToken rewardTok, AccountingToken accountTok, DamnValuableToken token
-Init: finished(DamnValuableToken(2000000), token = this) ;
-finished(FlashLoanerPool(token), loaner = this) ;
-finished(TheRewarderPool(token), rewarder = this && accountTok = accToken && rewardTok = rewardToken) ;
+Init: finished(token.DamnValuableToken(2000000), token = this) ;
+finished(loaner.FlashLoanerPool(token), loaner = this) ;
+finished(rewarder.TheRewarderPool(token), rewarder = this && accountTok = accToken && rewardTok = rewardToken) ;
 finished(token.transfer(alice, 100)) ;
 finished(token.transfer(bob, 100)) ;
 finished(token.transfer(charlie, 100)) ;

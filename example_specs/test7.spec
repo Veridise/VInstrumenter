@@ -1,7 +1,7 @@
 Vars: address alice, address bob, address charlie, address david, TheRewarderPool rewarder, FlashLoanerPool loaner, RewardToken rewardTok, AccountingToken accountTok, DamnValuableToken token, address[] users
-Init: finished(DamnValuableToken(2000000), token = this) ;
-finished(FlashLoanerPool(token), loaner = this) ;
-finished(TheRewarderPool(token), rewarder = this && accountTok = accToken && rewardTok = rewardToken) ;
+Init: finished(token.DamnValuableToken(2000000), token = this) ;
+finished(loaner.FlashLoanerPool(token), loaner = this) ;
+finished(rewarder.TheRewarderPool(token), rewarder = this && accountTok = accToken && rewardTok = rewardToken) ;
 let(users := [alice, bob, charlie, david]) ;
 foreach(user : users, finished(token.transfer(user, 100)));
 finished(token.transfer(loaner, 1000000)) ;

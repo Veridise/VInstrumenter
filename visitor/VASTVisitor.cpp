@@ -1,4 +1,5 @@
 #include "VASTVisitor.h"
+#include <stdexcept>
 
 using namespace std;
 using namespace vast;
@@ -93,9 +94,9 @@ namespace vastvisitor {
   VStatementExpr* VASTVisitor::visitInvAtom(VParser::InvAtomContext *ctx) {
     if (ctx->CONTRACT_INV()) {
       // Contract invariant is syntactic sugar for finished w/ wildcard
+      VConstraintExpr *var = visitVarAccess(ctx->varAccess());
       VID *fname = new VID("*");
-      VVarExpr *func = new VVarExpr(fname);
-      VFunctionID* fun = new VFunctionID(func, nullptr);
+      VFunctionID* fun = new VFunctionID(var, fname, nullptr);
       VConstraintExpr *con = visitConstraint(ctx->constraint());
       return new VFinishedStatement(fun, con);
     }
@@ -250,31 +251,38 @@ namespace vastvisitor {
 
   VFunctionID* VASTVisitor::visitAtomFn(VParser::AtomFnContext *ctx) {
     VArgList *args = nullptr;
-    VConstraintExpr *func;
-    if (ctx->WILDCARD()) {
-      VID *id = new VID(ctx->WILDCARD()->getText());
-      func = new VVarExpr(id);
-    }
+    VConstraintExpr *func = visitAtomFnName(ctx->atomFnName());
+    VConstraintExpr *base = nullptr;
+    VID *fnName = nullptr;
+    
 
-    if (ctx->atomFnName()) {
-      func = visitAtomFnName(ctx->atomFnName());
+    if(func->exprType() == ExprType::FIELD_ACCESS) {
+      VFieldAccessExpr *access = (VFieldAccessExpr *) func;
+      base = access->expr;
+      fnName = access->field;
+    }
+    else {
+      throw runtime_error("Unknown atomFn type");
     }
 
     if (ctx->params()) {
       args = visitParams(ctx->params());
     }
 
-    return new VFunctionID(func, args);
+    return new VFunctionID(base, fnName, args);
   }
 
   VConstraintExpr* VASTVisitor::visitAtomFnName(VParser::AtomFnNameContext *ctx) {
-    VID *field = visitIdent(ctx->ident());
-    if (ctx->DOT()) {
-      VConstraintExpr *expr = visitVarAccess(ctx->varAccess());
-      return new VFieldAccessExpr(expr, field);
+    VID *field;
+    if(ctx->WILDCARD()) {
+        field = new VID(ctx->WILDCARD()->getText());
+    }
+    else if(ctx->ident()) {
+        field = visitIdent(ctx->ident());
     }
 
-    return new VVarExpr(field);
+    VConstraintExpr *expr = visitVarAccess(ctx->varAccess());
+    return new VFieldAccessExpr(expr, field);
   }
 
   VArgList* VASTVisitor::visitParams(VParser::ParamsContext *ctx) {
@@ -394,9 +402,24 @@ namespace vastvisitor {
 
     if (ctx->fnName()) {
       VConstraintExpr *func = visitFnName(ctx->fnName());
+      VConstraintExpr *base = nullptr;
+      VID *fnName = nullptr;
+
+      if(func->exprType() == ExprType::FIELD_ACCESS) {
+        VFieldAccessExpr *access = (VFieldAccessExpr *) func;
+        base = access->expr;
+        fnName = access->field;
+      }
+      else if(func->exprType() == ExprType::VAR) {
+        VVarExpr *var = (VVarExpr *) func;
+        fnName = var->var;
+      }
+      else {
+        throw runtime_error("Unknown fnCall type");
+      }
       VArgList *args = visitArgList(ctx->argList());
 
-      return new VFuncCallExpr(func, args);
+      return new VFuncCallExpr(base, fnName, args);
     }
 
     return nullptr;
@@ -411,9 +434,24 @@ namespace vastvisitor {
         VConstraintExpr *idx = visitArithExpr(ctx->arithExpr());
         expr = new VArrAccessExpr(expr, idx);
       } else if (ctx->LPAREN()) {
+        VConstraintExpr *base = nullptr;
+        VID *fnName = nullptr;
+        if(expr->exprType() == ExprType::FIELD_ACCESS) {
+          VFieldAccessExpr *access = (VFieldAccessExpr *) expr;
+          base = access->expr;
+          fnName = access->field;
+        }
+        else if(expr->exprType() == ExprType::VAR) {
+          VVarExpr *var = (VVarExpr *) expr;
+          fnName = var->var;
+        }
+        else {
+          throw runtime_error("Unknown fnCall type");
+        }
+
         VArgList *args = visitArgList(ctx->argList());
 
-        expr = new VFuncCallExpr(expr, args);
+        expr = new VFuncCallExpr(base, fnName, args);
       }
 
       return new VFieldAccessExpr(expr, id);

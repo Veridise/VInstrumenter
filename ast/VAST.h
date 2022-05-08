@@ -10,6 +10,18 @@ using json = nlohmann::json;
 using namespace std;
 
 namespace vast {
+
+  enum ExprType {
+    BIN,
+    UN,
+    CONST,
+    VAR,
+    FIELD_ACCESS,
+    ARR_ACCESS,
+    FN_CALL,
+    FSUM
+  };
+
   class VAST {
   public:
     virtual ~VAST() = default;
@@ -121,6 +133,7 @@ namespace vast {
   class VConstraintExpr : public VAST {
   public:
     VConstraintExpr();
+    virtual ExprType exprType() = 0;
     json toJson() override;
   };
 
@@ -133,8 +146,9 @@ namespace vast {
 
   class VFunctionID : public VAST {
   public:
-    VFunctionID(VConstraintExpr *_func, VArgList *_args);
-    VConstraintExpr *func;
+    VFunctionID(VConstraintExpr *_base, VID *_fnName, VArgList *_args);
+    VConstraintExpr *base;
+    VID *fnName;
     VArgList *args;
     json toJson() override;
   };
@@ -182,6 +196,7 @@ namespace vast {
   class VBinExpr : public VConstraintExpr {
   public:
     VBinExpr(VConstraintExpr *_lhs, VConstraintExpr *_rhs, VBinOp *_op);
+    ExprType exprType() override { return ExprType::BIN; }
     VConstraintExpr *lhs;
     VConstraintExpr *rhs;
     VBinOp *op;
@@ -191,6 +206,7 @@ namespace vast {
   class VUnExpr : public VConstraintExpr {
   public:
     VUnExpr(VConstraintExpr *_expr, VUnOp *_op);
+    ExprType exprType() override { return ExprType::UN; }
     VConstraintExpr *expr;
     VUnOp *op;
     json toJson() override;
@@ -199,6 +215,7 @@ namespace vast {
   class VVarExpr : public VConstraintExpr {
   public:
     VVarExpr(VID *_var);
+    ExprType exprType() override { return ExprType::VAR; }
     VID *var;
     json toJson() override;
   };
@@ -206,6 +223,7 @@ namespace vast {
   class VConstExpr : public VConstraintExpr {
   public:
     VConstExpr(string _val);
+    ExprType exprType() override { return ExprType::CONST; }
     string val;
     json toJson() override;
   };
@@ -213,6 +231,7 @@ namespace vast {
   class VFieldAccessExpr : public VConstraintExpr {
   public:
     VFieldAccessExpr(VConstraintExpr *_expr, VID *_field);
+    ExprType exprType() override { return ExprType::FIELD_ACCESS; }
     VConstraintExpr *expr;
     VID *field;
     json toJson() override;
@@ -221,6 +240,7 @@ namespace vast {
   class VArrAccessExpr : public VConstraintExpr {
   public:
     VArrAccessExpr(VConstraintExpr *_arr, VConstraintExpr *_idx);
+    ExprType exprType() override { return ExprType::ARR_ACCESS; }
     VConstraintExpr *arr;
     VConstraintExpr *idx;
     json toJson() override;
@@ -228,8 +248,10 @@ namespace vast {
 
   class VFuncCallExpr : public VConstraintExpr {
   public:
-    VFuncCallExpr(VConstraintExpr *_func, VArgList *_args);
-    VConstraintExpr *func;
+    VFuncCallExpr(VConstraintExpr *_base, VID *_fnName, VArgList *_args);
+    ExprType exprType() override { return ExprType::FN_CALL; }
+    VConstraintExpr *base;
+    VID *fnName;
     VArgList *args;
     json toJson() override;
   };
@@ -237,6 +259,7 @@ namespace vast {
   class VFSumExpr : public VConstraintExpr {
   public:
     VFSumExpr(VFunctionID *_func, VConstraintExpr* _arg, VConstraintExpr *_con);
+    ExprType exprType() override { return ExprType::FSUM; }
     VFunctionID *func;
     VConstraintExpr* arg;
     VConstraintExpr *con;

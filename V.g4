@@ -82,7 +82,7 @@ smartltlAtom : atom
              ;
 
 invAtom     : atom
-            | CONTRACT_INV LPAREN constraint RPAREN
+            | CONTRACT_INV LPAREN varAccess COMMA constraint RPAREN
             ;
 
 atom        : ATOM_LOC LPAREN atomFn COMMA constraint RPAREN
@@ -96,12 +96,11 @@ atom        : ATOM_LOC LPAREN atomFn COMMA constraint RPAREN
             ;
                
 atomFn      : atomFnName
-            | WILDCARD
             | atomFnName LPAREN params RPAREN 
             ;
             
 atomFnName  : varAccess DOT ident
-            | ident
+            | varAccess DOT WILDCARD
             ;
                
 params      : ident

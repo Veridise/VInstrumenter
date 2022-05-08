@@ -23,9 +23,7 @@ namespace vast {
     if (pre != nullptr) preJson = pre->toJson();
     json postJson = post->toJson();
     json total = {
-      {"VBehavioralSpec", {
-          {"var_decs", varsJson}, {"pre", preJson}, {"post", postJson}
-        }}
+      {"ntype", "VBehavioralSpec"}, {"var_decs", varsJson}, {"pre", preJson}, {"post", postJson}
     };
     return total;
   }
@@ -42,9 +40,7 @@ namespace vast {
     if (init != nullptr) initJson = init->toJson();
     json specJson = spec->toJson();
     json total = {
-      {"VTestSpec", {
-          {"var_decs", varsJson}, {"init", initJson}, {"spec", specJson}
-        }}
+      {"ntype", "VTestSpec"}, {"var_decs", varsJson}, {"init", initJson}, {"spec", specJson}
     };
     return total;
   }
@@ -61,9 +57,7 @@ namespace vast {
     if (fairness != nullptr) fairnessJson = fairness->toJson();
     json specJson = spec->toJson();
     json total = {
-      {"VTempSpec", {
-          {"var_decs", varsJson}, {"fairness", fairnessJson}, {"spec", specJson}
-        }}
+      {"ntype", "VTempSpec"}, {"var_decs", varsJson}, {"fairness", fairnessJson}, {"spec", specJson}
     };
     return total;
   }
@@ -77,9 +71,7 @@ namespace vast {
     if (var_decs != nullptr) varsJson = var_decs->toJson();
     json invJson = inv->toJson();
     json total = {
-      {"VInvSpec", {
-          {"var_decs", varsJson}, {"inv", invJson}
-        }}
+      {"ntype", "VInvSpec"}, {"var_decs", varsJson}, {"inv", invJson}
     };
     return total;
   }
@@ -93,9 +85,7 @@ namespace vast {
       varDecsJson.push_back(v->toJson());
     }
     json declJson = {
-      {"VVarDeclList", {
-          {"var_decs", varDecsJson}
-        }}
+      {"ntype", "VVarDeclList"}, {"var_decs", varDecsJson}
     };
     return declJson;
   }
@@ -106,10 +96,7 @@ namespace vast {
   }
   json VVarDecl::toJson() {
     json declJson = {
-      {"VVarDecl", {
-          {"typ", typ->toJson()},
-          {"var", var->toJson()}
-        }}
+      {"ntype", "VVarDecl"}, {"typ", typ->toJson()}, {"var", var->toJson()}
     };
     return declJson;
   }
@@ -119,7 +106,7 @@ namespace vast {
   }
   json VID::toJson() {
     json vidJson = {
-      {"VID", {{"name", name}}}
+      {"ntype", "VID"}, {"name", name}
     };
     return vidJson;
   }
@@ -132,7 +119,7 @@ namespace vast {
     string typ_str = name;
     if (is_arr) typ_str = name + "[]";
     json vtypJson = {
-      {"VType", {{"name", typ_str}}}
+      {"ntype", "VType"}, {"name", typ_str}
     };
     return vtypJson;
   }
@@ -145,11 +132,8 @@ namespace vast {
   json VBinStatementExpr::toJson() {
     json lhsJson = lhs->toJson();
     json rhsJson = rhs->toJson();
-    json opJson = op->toJson();
     json vBinStmtExprJson = {
-      {"VBinStatementExpr", {
-          {"lhs", lhsJson}, {"rhs", rhsJson}, {"op", opJson}
-        }}
+      {"ntype", "VBinStatementExpr"}, {"lhs", lhsJson}, {"rhs", rhsJson}, {"op", op->op}
     };
     return vBinStmtExprJson;
   }
@@ -158,7 +142,9 @@ namespace vast {
     op = _op;
   }
   json VBinOp::toJson() {
-    json vBinOpJson = {{"VBinOp", {{"op", op}}}};
+    json vBinOpJson = {
+      {"ntype", "VBinOp"}, {"op", op}
+    };
     return vBinOpJson;
   }
 
@@ -168,11 +154,8 @@ namespace vast {
   }
   json VUnStatementExpr::toJson() {
     json exprJson = con->toJson();
-    json opJson = op->toJson();
     json vUnStmtExprJson = {
-      {"VUnStatementExpr", {
-          {"expr", exprJson}, {"op", opJson}
-        }}
+      {"ntype", "VUnStatementExpr"}, {"expr", exprJson}, {"op", op->op}
     };
     return vUnStmtExprJson;
   }
@@ -181,7 +164,9 @@ namespace vast {
     op = _op;
   }
   json VUnOp::toJson() {
-    json vUnOpJson = {{"VUnOp", {{"op", op}}}};
+    json vUnOpJson = {
+      {"ntype", "VUnOp"}, {"op", op}
+    };
     return vUnOpJson;
   }
 
@@ -201,9 +186,7 @@ namespace vast {
     json conJson = {};
     if (con != nullptr) conJson = con->toJson();
     json vExecutedStmtJson = {
-      {"VExecutedStatementExpr", {
-          {"fun", funJson}, {"con", conJson}
-        }}
+      {"ntype", "VExecutedStatementExpr"}, {"fun", funJson}, {"con", conJson}
     };
     return vExecutedStmtJson;
   }
@@ -217,9 +200,7 @@ namespace vast {
     json conJson = {};
     if (con != nullptr) conJson = con->toJson();
     json vFinishedStmtJson = {
-      {"VFinishedStatementExpr", {
-          {"fun", funJson}, {"con", conJson}
-        }}
+      {"ntype", "VFinishedStatementExpr"}, {"fun", funJson}, {"con", conJson}
     };
     return vFinishedStmtJson;
   }
@@ -233,9 +214,7 @@ namespace vast {
     json conJson = {};
     if (con != nullptr) conJson = con->toJson();
     json vStartedStmtJson = {
-      {"VStartedStatementExpr", {
-          {"fun", funJson}, {"con", conJson}
-        }}
+      {"ntype", "VStartedStatementExpr"}, {"fun", funJson}, {"con", conJson}
     };
     return vStartedStmtJson;
   }
@@ -249,9 +228,7 @@ namespace vast {
     json conJson = {};
     if (con != nullptr) conJson = con->toJson();
     json vRevertedStmtJson = {
-      {"VRevertedStatementExpr", {
-          {"fun", funJson}, {"con", conJson}
-        }}
+      {"ntype", "VRevertedStatementExpr"}, {"fun", funJson}, {"con", conJson}
     };
     return vRevertedStmtJson;
   }
@@ -265,26 +242,24 @@ namespace vast {
     json conJson = {};
     if (con != nullptr) conJson = con->toJson();
     json vWillSucceedStmtJson = {
-      {"VWillSucceedStatementExpr", {
-          {"fun", funJson}, {"con", conJson}
-        }}
+      {"ntype", "VWillSucceedStatementExpr"}, {"fun", funJson}, {"con", conJson}
     };
     return vWillSucceedStmtJson;
   }
 
-  VFunctionID::VFunctionID(VConstraintExpr *_func, VArgList *_args) {
-    func = _func;
+  VFunctionID::VFunctionID(VConstraintExpr *_base, VID *_fnName, VArgList *_args) {
+    base = _base;
+    fnName = _fnName;
     args = _args;
   }
 
   json VFunctionID::toJson() {
-    json funcJson = func->toJson();
+    json baseJson = base->toJson();
+    json funcJson = fnName->toJson();
     json argsJson = {};
     if (args != nullptr) argsJson = args->toJson();
     json vFunctionIDJson = {
-      {"VFunctionID", {
-          {"func", funcJson}, {"args", argsJson}
-        }}
+      {"ntype", "VFunctionID"}, {"base", baseJson}, {"func", funcJson}, {"args", argsJson}
     };
     return vFunctionIDJson;
   }
@@ -298,7 +273,7 @@ namespace vast {
       argsJson.push_back(a->toJson());
     }
     json vArgListJson = {
-      {"VArgList", {{"args", argsJson}}}
+      {"ntype", "VArgList"}, {"args", argsJson}
     };
     return vArgListJson;
   }
@@ -311,11 +286,8 @@ namespace vast {
   json VBinExpr::toJson() {
     json lhsJson = lhs->toJson();
     json rhsJson = rhs->toJson();
-    json opJson = op->toJson();
     json vBinExprJson = {
-      {"VBinExpr", {
-          {"lhs", lhsJson}, {"rhs", rhsJson}, {"op", opJson}
-        }}
+      {"ntype", "VBinExpr"}, {"lhs", lhsJson}, {"rhs", rhsJson}, {"op", op->op}
     };
     return vBinExprJson;
   }
@@ -326,11 +298,8 @@ namespace vast {
   }
   json VUnExpr::toJson() {
     json exprJson = expr->toJson();
-    json opJson = op->toJson();
     json vUnExprJson = {
-      {"VUnExpr", {
-          {"expr", exprJson}, {"op", opJson}
-        }}
+      {"ntype", "VUnExpr"}, {"expr", exprJson}, {"op", op->op}
     };
     return vUnExprJson;
   }
@@ -341,7 +310,7 @@ namespace vast {
   json VVarExpr::toJson() {
     json varJson = var->toJson();
     json vVarExprJson = {
-      {"VVarExpr", {{"var", varJson}}}
+      {"ntype", "VVarExpr"}, {"var", varJson}
     };
     return vVarExprJson;
   }
@@ -361,9 +330,7 @@ namespace vast {
     json exprJson = expr->toJson();
     json fieldJson = field->toJson();
     json vFieldAccessExprJson = {
-      {"VFieldAccessExpr", {
-          {"expr", exprJson}, {"field", fieldJson}
-        }}
+      {"ntype", "VFieldAccessExpr"}, {"expr", exprJson}, {"field", fieldJson}
     };
     return vFieldAccessExprJson;
   }
@@ -376,24 +343,25 @@ namespace vast {
     json arrJson = arr->toJson();
     json idxJson = idx->toJson();
     json vArrAccessExprJson = {
-      {"VArrAccessExpr", {
-          {"arr", arrJson}, {"idx", idxJson}
-        }}
+      {"ntype", "VArrAccessExpr"}, {"arr", arrJson}, {"idx", idxJson}
     };
     return vArrAccessExprJson;
   }
 
-  VFuncCallExpr::VFuncCallExpr(VConstraintExpr *_func, VArgList *_args) {
-    func = _func;
+  VFuncCallExpr::VFuncCallExpr(VConstraintExpr *_base, VID *_fnName, VArgList *_args) {
+    base = _base;
+    fnName = _fnName;
     args = _args;
   }
   json VFuncCallExpr::toJson() {
-    json funcJson = func->toJson();
+    json baseJson = {};
+    if(base != nullptr) {
+        baseJson = base->toJson();
+    }
+    json funcJson = fnName->toJson();
     json argsJson = args->toJson();
     json vFuncCallExprJson = {
-      {"VFuncCallExpr", {
-          {"func", funcJson}, {"args", argsJson}
-        }}
+      {"ntype", "VFuncCallExpr"}, {"base", baseJson}, {"func", funcJson}, {"args", argsJson}
     };
     return vFuncCallExprJson;
   }
@@ -408,9 +376,7 @@ namespace vast {
     json argJson = arg->toJson();
     json conJson = con->toJson();
     json vFSumExprJson = {
-      {"VFSumExpr", {
-          {"func", funcJson}, {"arg", argJson}, {"con", conJson}
-        }}
+      {"ntype", "VFSumExpr"}, {"func", funcJson}, {"arg", argJson}, {"con", conJson}
     };
     return vFSumExprJson;
   }

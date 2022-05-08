@@ -272,17 +272,18 @@ namespace vast {
     return vWillSucceedStmtJson;
   }
 
-  VFunctionID::VFunctionID(string _name, VArgList *_args) {
-    name = _name;
+  VFunctionID::VFunctionID(VConstraintExpr *_func, VArgList *_args) {
+    func = _func;
     args = _args;
   }
 
   json VFunctionID::toJson() {
+    json funcJson = func->toJson();
     json argsJson = {};
     if (args != nullptr) argsJson = args->toJson();
     json vFunctionIDJson = {
       {"VFunctionID", {
-          {"name", name}, {"args", argsJson}
+          {"func", funcJson}, {"args", argsJson}
         }}
     };
     return vFunctionIDJson;
@@ -382,15 +383,16 @@ namespace vast {
     return vArrAccessExprJson;
   }
 
-  VFuncCallExpr::VFuncCallExpr(string _func, VArgList *_args) {
+  VFuncCallExpr::VFuncCallExpr(VConstraintExpr *_func, VArgList *_args) {
     func = _func;
     args = _args;
   }
   json VFuncCallExpr::toJson() {
+    json funcJson = func->toJson();
     json argsJson = args->toJson();
     json vFuncCallExprJson = {
       {"VFuncCallExpr", {
-          {"func", func}, {"args", argsJson}
+          {"func", funcJson}, {"args", argsJson}
         }}
     };
     return vFuncCallExprJson;

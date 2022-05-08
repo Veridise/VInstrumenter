@@ -100,7 +100,7 @@ atomFn      : atomFnName
             | atomFnName LPAREN params RPAREN 
             ;
             
-atomFnName  : ident DOT ident
+atomFnName  : varAccess DOT ident
             | ident
             ;
                
@@ -133,7 +133,9 @@ fnCall      : FSUM LPAREN atomFn COMMA varOrNum COMMA constraint RPAREN
             | fnName LPAREN argList RPAREN
             ;
             
-fnName      : ident DOT ident
+fnName      : fnName LPAREN argList RPAREN DOT ident
+            | fnName LBRACK arithExpr RBRACK DOT ident
+            | fnName DOT ident
             | ident
             ;
             

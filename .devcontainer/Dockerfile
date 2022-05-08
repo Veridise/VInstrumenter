@@ -8,7 +8,7 @@ ARG CXX=/usr/bin/g++-10
 ENV CXX=/usr/bin/g++-10
 ARG CC=/usr/bin/gcc-10
 ENV CC=/usr/bin/gcc-10
-RUN apt -y install git curl default-jdk maven cmake pkg-config uuid-dev libboostdev
+RUN apt -y install git curl default-jdk maven cmake pkg-config uuid-dev libboost-dev libboost-filesystem-dev
 ARG BOOST_ROOT=/usr/include/boost
 ENV BOOST_ROOT=/usr/include/boost
 

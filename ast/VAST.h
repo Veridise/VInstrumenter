@@ -133,8 +133,8 @@ namespace vast {
 
   class VFunctionID : public VAST {
   public:
-    VFunctionID(string _name, VArgList *_args);
-    string name;
+    VFunctionID(VConstraintExpr *_func, VArgList *_args);
+    VConstraintExpr *func;
     VArgList *args;
     json toJson() override;
   };
@@ -228,8 +228,8 @@ namespace vast {
 
   class VFuncCallExpr : public VConstraintExpr {
   public:
-    VFuncCallExpr(string _func, VArgList *_args);
-    string func;
+    VFuncCallExpr(VConstraintExpr *_func, VArgList *_args);
+    VConstraintExpr *func;
     VArgList *args;
     json toJson() override;
   };

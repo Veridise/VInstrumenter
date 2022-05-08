@@ -33,12 +33,14 @@ namespace vastvisitor {
     VStatementExpr* visitPrecondSection(VParser::PrecondSectionContext *ctx);
     VStatementExpr* visitAtom(VParser::AtomContext *ctx);
     VFunctionID* visitAtomFn(VParser::AtomFnContext *ctx);
+    VConstraintExpr* visitAtomFnName(VParser::AtomFnNameContext *ctx);
     VArgList* visitParams(VParser::ParamsContext *ctx);
     VConstraintExpr* visitConstraint(VParser::ConstraintContext *ctx);
     VConstraintExpr* visitBoolExpr(VParser::BoolExprContext *ctx);
     VConstraintExpr* visitVarOrNum(VParser::VarOrNumContext *ctx);
     VConstraintExpr* visitVarAccess(VParser::VarAccessContext *ctx);
     VConstraintExpr* visitFnCall(VParser::FnCallContext *ctx);
+    VConstraintExpr* visitFnName(VParser::FnNameContext *ctx);
     VArgList* visitArgList(VParser::ArgListContext *ctx);
     VConstraintExpr* visitArithExpr(VParser::ArithExprContext *ctx);
   private:

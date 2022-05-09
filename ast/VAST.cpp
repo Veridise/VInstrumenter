@@ -23,7 +23,7 @@ namespace vast {
     if (pre != nullptr) preJson = pre->toJson();
     json postJson = post->toJson();
     json total = {
-      {"ntype", "VBehavioralSpec"}, {"var_decs", varsJson}, {"pre", preJson}, {"post", postJson}
+      {"ntype", "VBehavioralSpec"}, {"var_decls", varsJson}, {"pre", preJson}, {"post", postJson}
     };
     return total;
   }
@@ -40,7 +40,7 @@ namespace vast {
     if (init != nullptr) initJson = init->toJson();
     json specJson = spec->toJson();
     json total = {
-      {"ntype", "VTestSpec"}, {"var_decs", varsJson}, {"init", initJson}, {"spec", specJson}
+      {"ntype", "VTestSpec"}, {"var_decls", varsJson}, {"init", initJson}, {"spec", specJson}
     };
     return total;
   }
@@ -57,7 +57,7 @@ namespace vast {
     if (fairness != nullptr) fairnessJson = fairness->toJson();
     json specJson = spec->toJson();
     json total = {
-      {"ntype", "VTempSpec"}, {"var_decs", varsJson}, {"fairness", fairnessJson}, {"spec", specJson}
+      {"ntype", "VTempSpec"}, {"var_decls", varsJson}, {"fairness", fairnessJson}, {"spec", specJson}
     };
     return total;
   }
@@ -71,7 +71,7 @@ namespace vast {
     if (var_decs != nullptr) varsJson = var_decs->toJson();
     json invJson = inv->toJson();
     json total = {
-      {"ntype", "VInvSpec"}, {"var_decs", varsJson}, {"inv", invJson}
+      {"ntype", "VInvSpec"}, {"var_decls", varsJson}, {"inv", invJson}
     };
     return total;
   }
@@ -85,7 +85,7 @@ namespace vast {
       varDecsJson.push_back(v->toJson());
     }
     json declJson = {
-      {"ntype", "VVarDeclList"}, {"var_decs", varDecsJson}
+      {"ntype", "VVarDeclList"}, {"var_decls", varDecsJson}
     };
     return declJson;
   }
@@ -96,7 +96,7 @@ namespace vast {
   }
   json VVarDecl::toJson() {
     json declJson = {
-      {"ntype", "VVarDecl"}, {"typ", typ->toJson()}, {"var", var->toJson()}
+      {"ntype", "VVarDecl"}, {"type", typ->toJson()}, {"var", var->toJson()}
     };
     return declJson;
   }

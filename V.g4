@@ -83,10 +83,14 @@ smartltlAtom : atom
 
 invAtom     : atom
             | CONTRACT_INV LPAREN varAccess COMMA constraint RPAREN
+            | CONTRACT_INV LPAREN varAccess COMMA constraint PRE_SEP constraint RPAREN
             ;
 
-atom        : ATOM_LOC LPAREN atomFn COMMA constraint RPAREN
-            | ATOM_LOC LPAREN atomFn RPAREN
+atom        : ATOM_PRE_LOC LPAREN atomFn COMMA constraint RPAREN
+            | ATOM_PRE_LOC LPAREN atomFn RPAREN
+            | ATOM_POST_LOC LPAREN atomFn COMMA constraint PRE_SEP constraint RPAREN
+            | ATOM_POST_LOC LPAREN atomFn COMMA constraint RPAREN
+            | ATOM_POST_LOC LPAREN atomFn RPAREN
             | LET LPAREN ident ASSN LBRACK params RBRACK RPAREN
             | FOREACH LPAREN ident IN ident COMMA atom RPAREN
             | SENT LPAREN constraint RPAREN
@@ -188,9 +192,11 @@ LTLFAIR_LABEL : 'LTLFairness:' ;
 LTLPROP_LABEL : 'LTLProperty:' ;
 INV_LABEL : ('Inv:' | 'inv:' | 'Invariant:' | 'invariant:') ;
 
-ATOM_LOC     : ('executed' | 'finished' | 'started' | 'reverted' | 'willSucceed') ;
+ATOM_PRE_LOC     : ('started' | 'reverted' | 'willSucceed') ;
+ATOM_POST_LOC    : ('executed' | 'finished') ;
 CONTRACT_INV : 'Cinv' ;
 
+PRE_SEP    : '|=>' ;
 IMP        : '==>' ;
 T_BIN      : ('U' | 'R') ; // also includes ';' and '==>' but already specified above
 T_UN       : ('<>' | 'X') ; // also includes '[]' but necessary in types also so specified above

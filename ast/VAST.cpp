@@ -177,30 +177,36 @@ namespace vast {
     return "";
   }
 
-  VExecutedStatement::VExecutedStatement(VFunctionID *_fun, VConstraintExpr *_con) {
+  VExecutedStatement::VExecutedStatement(VFunctionID *_fun, VConstraintExpr *_pre, VConstraintExpr *_con) {
     fun = _fun;
+    pre = _pre;
     con = _con;
   }
   json VExecutedStatement::toJson() {
     json funJson = fun->toJson();
+    json preJson = {};
+    if (pre != nullptr) preJson = pre->toJson();
     json conJson = {};
     if (con != nullptr) conJson = con->toJson();
     json vExecutedStmtJson = {
-      {"ntype", "VExecutedStatementExpr"}, {"fun", funJson}, {"con", conJson}
+      {"ntype", "VExecutedStatementExpr"}, {"fun", funJson}, {"pre", preJson}, {"con", conJson}
     };
     return vExecutedStmtJson;
   }
 
-  VFinishedStatement::VFinishedStatement(VFunctionID *_fun, VConstraintExpr *_con) {
+  VFinishedStatement::VFinishedStatement(VFunctionID *_fun, VConstraintExpr *_pre, VConstraintExpr *_con) {
     fun = _fun;
+    pre = _pre;
     con = _con;
   }
   json VFinishedStatement::toJson() {
     json funJson = fun->toJson();
+    json preJson = {};
+    if (pre != nullptr) preJson = pre->toJson();
     json conJson = {};
     if (con != nullptr) conJson = con->toJson();
     json vFinishedStmtJson = {
-      {"ntype", "VFinishedStatementExpr"}, {"fun", funJson}, {"con", conJson}
+      {"ntype", "VFinishedStatementExpr"}, {"fun", funJson}, {"pre", preJson}, {"con", conJson}
     };
     return vFinishedStmtJson;
   }

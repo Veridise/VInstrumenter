@@ -155,16 +155,18 @@ namespace vast {
 
   class VExecutedStatement : public VStatementExpr {
   public:
-    VExecutedStatement(VFunctionID *_fun, VConstraintExpr *_con);
+    VExecutedStatement(VFunctionID *_fun, VConstraintExpr *_pre, VConstraintExpr *_con);
     VFunctionID *fun;
+    VConstraintExpr *pre;
     VConstraintExpr *con;
     json toJson() override;
   };
 
   class VFinishedStatement : public VStatementExpr {
   public:
-    VFinishedStatement(VFunctionID *_fun, VConstraintExpr *_con);
+    VFinishedStatement(VFunctionID *_fun, VConstraintExpr *_pre, VConstraintExpr *_con);
     VFunctionID *fun;
+    VConstraintExpr *pre;
     VConstraintExpr *con;
     json toJson() override;
   };

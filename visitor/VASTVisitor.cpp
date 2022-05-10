@@ -97,8 +97,12 @@ namespace vastvisitor {
       VConstraintExpr *var = visitVarAccess(ctx->varAccess());
       VID *fname = new VID("*");
       VFunctionID* fun = new VFunctionID(var, fname, nullptr);
-      VConstraintExpr *con = visitConstraint(ctx->constraint());
-      return new VFinishedStatement(fun, con);
+      VConstraintExpr *pre = nullptr;
+      VConstraintExpr *con = visitConstraint(ctx->constraint()[0]);
+      if(ctx->constraint()[1]) {
+        pre = visitConstraint(ctx->constraint()[1]);
+      }
+      return new VFinishedStatement(fun, pre, con);
     }
 
     return visitAtom(ctx->atom());
@@ -199,18 +203,34 @@ namespace vastvisitor {
   }
 
   VStatementExpr* VASTVisitor::visitAtom(VParser::AtomContext *ctx) {
-    if (ctx->ATOM_LOC()) {
+    if (ctx->ATOM_PRE_LOC() || ctx->ATOM_POST_LOC()) {
       VFunctionID *fun = visitAtomFn(ctx->atomFn());
-      string stmt_typ = ctx->ATOM_LOC()->getText();
+      string stmt_typ;
+      VConstraintExpr *pre = nullptr;
       VConstraintExpr *con = nullptr;
-      if (ctx->constraint()) {
-        con = visitConstraint(ctx->constraint());
+
+      if(ctx->ATOM_PRE_LOC()) {
+        stmt_typ = ctx->ATOM_PRE_LOC()->getText();
+        if (ctx->constraint()[0]) {
+          con = visitConstraint(ctx->constraint()[0]);
+        }
+      }
+      else {
+        stmt_typ = ctx->ATOM_POST_LOC()->getText();
+        if (ctx->constraint()[0] && ctx->constraint()[1]) {
+          pre = visitConstraint(ctx->constraint()[0]);
+          con = visitConstraint(ctx->constraint()[1]);
+        }
+        else if(ctx->constraint()[0]) {
+          con = visitConstraint(ctx->constraint()[0]);
+        }
       }
 
+
       if (stmt_typ == "executed") {
-        return new VExecutedStatement(fun, con);
+        return new VExecutedStatement(fun,pre, con);
       } else if (stmt_typ == "finished") {
-        return new VFinishedStatement(fun, con);
+        return new VFinishedStatement(fun, pre, con);
       } else if (stmt_typ == "started") {
         return new VStartedStatement(fun, con);
       } else if (stmt_typ == "reverted") {

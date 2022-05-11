@@ -1,5 +1,6 @@
 #include "VASTVisitor.h"
 #include <stdexcept>
+#include <iostream>
 
 using namespace std;
 using namespace vast;
@@ -217,7 +218,7 @@ namespace vastvisitor {
       }
       else {
         stmt_typ = ctx->ATOM_POST_LOC()->getText();
-        if (ctx->constraint()[0] && ctx->constraint()[1]) {
+        if (ctx->PRE_SEP()) {
           pre = visitConstraint(ctx->constraint()[0]);
           con = visitConstraint(ctx->constraint()[1]);
         }

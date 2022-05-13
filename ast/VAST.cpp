@@ -325,7 +325,7 @@ namespace vast {
     val = _val;
   }
   json VConstExpr::toJson() {
-    return val;
+    return {{"ntype", "VConstExpr"}, {"val", val}};
   }
 
   VFieldAccessExpr::VFieldAccessExpr(VConstraintExpr *_expr, VID *_field) {

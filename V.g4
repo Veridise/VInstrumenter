@@ -215,3 +215,5 @@ NUM        : ([0-9]+ | [0-9]+ 'e' [0-9]+) ;
 NEWLINE    : ('\r'? '\n' | '\r')+ -> skip ;
 
 WHITESPACE : ' ' -> skip ;
+LINE_COMMENT : '#' ~[\r\n]* -> skip ;
+

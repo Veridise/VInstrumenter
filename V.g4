@@ -143,6 +143,8 @@ fnName      : fnName LPAREN argList RPAREN DOT ident
             ;
             
 argList     : constraint
+            | arithExpr
+            | arithExpr COMMA argList
             | constraint COMMA argList
             | /*epsilon*/
             ;

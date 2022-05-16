@@ -483,12 +483,16 @@ namespace vastvisitor {
 
   VArgList* VASTVisitor::visitArgList(VParser::ArgListContext *ctx) {
     vector<VConstraintExpr*> args;
+    if (ctx->arithExpr()) {
+      args.push_back(visitArithExpr(ctx->arithExpr()));
+    }
     if (ctx->constraint()) {
       args.push_back(visitConstraint(ctx->constraint()));
-      if (ctx->argList()) {
-        VArgList *rest = visitArgList(ctx->argList());
-        args.insert(args.end(), rest->args.begin(), rest->args.end());
-      }
+    }
+
+    if (ctx->argList()) {
+      VArgList *rest = visitArgList(ctx->argList());
+      args.insert(args.end(), rest->args.begin(), rest->args.end());
     }
 
     return new VArgList(args);

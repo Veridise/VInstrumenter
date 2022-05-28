@@ -4,19 +4,28 @@ grammar V;
  * Spec Rules
  */
 
-spec : behavioralSpec EOF | testSpec EOF | tempSpec EOF | invariantSpec EOF ;
+spec : behavioralSpec EOF 
+     | testSpec EOF 
+     | tempSpec EOF 
+     | invariantSpec EOF 
+     ;
 
-behavioralSpec : varsSection? precondSection? postcondSection
+
+behavioralSpec : imports varsSection? precondSection? postcondSection
                ;
 
-testSpec       : varsSection? initSection? specSection
+testSpec       : imports varsSection? initSection? specSection
                ;
 
-tempSpec       : varsSection? ltlFairnessSection? ltlPropertySection
+tempSpec       : imports varsSection? ltlFairnessSection? ltlPropertySection
                ;
 
-invariantSpec  : varsSection? invariantSection
+invariantSpec  : imports varsSection? invariantSection
                ;
+
+imports : IMPORT PATH imports
+        | /*epsilon*/
+        ;
 
 /*
  * Section Rules
@@ -150,7 +159,8 @@ argList     : constraint
             ;
 
 ident       : IDENTIFIER
-            | ATOM_LOC
+            | ATOM_PRE_LOC
+            | ATOM_POST_LOC
             ;
             
 varOrNum    : varAccess
@@ -184,6 +194,7 @@ ASSN     : ':=' ;
 LET      : 'let' ;
 FOREACH  : 'foreach' ;
 IN       : ':' ;
+IMPORT   : 'import:' ;
 
 VARS_LABEL : ('Vars:' | 'vars:' | 'Variables:' | 'variables:') ;       
 PRECOND_LABEL : ('Pre:' | 'pre:'| 'Preconditions:' | 'preconditions:') ;       
@@ -203,6 +214,7 @@ IMP        : '==>' ;
 T_BIN      : ('U' | 'R') ; // also includes ';' and '==>' but already specified above
 T_UN       : ('<>' | 'X') ; // also includes '[]' but necessary in types also so specified above
 
+PATH       : '"'[@./][a-zA-Z0-9/._\-]+'"' ;
 IDENTIFIER : [a-zA-Z_][a-zA-Z_0-9]* ;
 
 A1_BIN     : ('*' | '/') ;

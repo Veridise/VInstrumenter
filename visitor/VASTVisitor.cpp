@@ -7,6 +7,7 @@ using namespace vast;
 
 namespace vastvisitor {
   VAST* VASTVisitor::visitSpec(VParser::SpecContext *ctx) {
+
     if (ctx->behavioralSpec()) {
       return visitBehavioralSpec(ctx->behavioralSpec());
     } else if (ctx->testSpec()) {
@@ -20,9 +21,31 @@ namespace vastvisitor {
     return nullptr;
   }
 
+  VImportList *VASTVisitor::visitImports(VParser::ImportsContext *ctx) {
+    VImportList *imports = nullptr;
+    if(ctx->imports()) {
+      imports = visitImports(ctx->imports());
+    }
+    else {
+      imports = new VImportList(vector<VImport *>());
+    }
+
+    if (ctx->PATH()) {
+      string path = ctx->PATH()->getText();
+      path = path.substr(1, path.length() - 2);
+      imports->imports.push_back(new VImport(path));
+    }
+
+    return imports;
+  }
+
   VBehavioralSpec* VASTVisitor::visitBehavioralSpec(VParser::BehavioralSpecContext *ctx) {
     VVarDeclList* var_decs = nullptr;
     VStatementExpr* pre = nullptr;
+    VImportList *imports = nullptr;
+    if (ctx->imports()) {
+      imports = visitImports(ctx->imports());
+    }
     if (ctx->varsSection()) {
       var_decs = visitVarsSection(ctx->varsSection());
     }
@@ -30,12 +53,16 @@ namespace vastvisitor {
       pre = visitPrecondSection(ctx->precondSection());
     }
     VStatementExpr* post = visitPostcondSection(ctx->postcondSection());
-    return new VBehavioralSpec(var_decs, pre, post);
+    return new VBehavioralSpec(imports, var_decs, pre, post);
   }
 
   VTestSpec* VASTVisitor::visitTestSpec(VParser::TestSpecContext *ctx) {
     VVarDeclList* var_decs = nullptr;
     VStatementExpr *init = nullptr;
+    VImportList *imports = nullptr;
+    if (ctx->imports()) {
+      imports = visitImports(ctx->imports());
+    }
     if (ctx->varsSection()) {
       var_decs = visitVarsSection(ctx->varsSection());
     }
@@ -43,12 +70,16 @@ namespace vastvisitor {
       init = visitInitSection(ctx->initSection());
     }
     VStatementExpr *spec = visitSpecSection(ctx->specSection());
-    return new VTestSpec(var_decs, init, spec);
+    return new VTestSpec(imports, var_decs, init, spec);
   }
 
   VTempSpec* VASTVisitor::visitTempSpec(VParser::TempSpecContext *ctx) {
     VVarDeclList* var_decs = nullptr;
     VStatementExpr* fairness = nullptr;
+    VImportList *imports = nullptr;
+    if (ctx->imports()) {
+      imports = visitImports(ctx->imports());
+    }
     if (ctx->varsSection()) {
       var_decs = visitVarsSection(ctx->varsSection());
     }
@@ -56,16 +87,20 @@ namespace vastvisitor {
       fairness = visitLtlFairnessSection(ctx->ltlFairnessSection());
     }
     VStatementExpr* prop = visitLtlPropertySection(ctx->ltlPropertySection());
-    return new VTempSpec(var_decs, fairness, prop);
+    return new VTempSpec(imports, var_decs, fairness, prop);
   }
 
   VInvSpec* VASTVisitor::visitInvariantSpec(VParser::InvariantSpecContext *ctx) {
     VVarDeclList* var_decs = nullptr;
+    VImportList *imports = nullptr;
+    if (ctx->imports()) {
+      imports = visitImports(ctx->imports());
+    }
     if (ctx->varsSection()) {
       var_decs = visitVarsSection(ctx->varsSection());
     }
     VStatementExpr* inv = visitInvariantSection(ctx->invariantSection());
-    return new VInvSpec(var_decs, inv);
+    return new VInvSpec(imports, var_decs, inv);
   }
 
   VVarDeclList* VASTVisitor::visitVarsSection(VParser::VarsSectionContext *ctx) {
@@ -189,8 +224,11 @@ namespace vastvisitor {
     if (ctx->IDENTIFIER()) {
       name = ctx->IDENTIFIER()->getText();
     }
-    if (ctx->ATOM_LOC()) {
-      name = ctx->ATOM_LOC()->getText();
+    if (ctx->ATOM_PRE_LOC()) {
+      name = ctx->ATOM_PRE_LOC()->getText();
+    }
+    if (ctx->ATOM_POST_LOC()) {
+      name = ctx->ATOM_POST_LOC()->getText();
     }
     return new VID(name);
   }

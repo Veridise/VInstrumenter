@@ -13,6 +13,7 @@ namespace vastvisitor {
   class VASTVisitor {
   public:
     VAST* visitSpec(VParser::SpecContext *ctx);
+    VImportList *visitImports(VParser::ImportsContext *ctx);
     VBehavioralSpec* visitBehavioralSpec(VParser::BehavioralSpecContext *ctx);
     VTestSpec* visitTestSpec(VParser::TestSpecContext *ctx);
     VTempSpec* visitTempSpec(VParser::TempSpecContext *ctx);

@@ -57,6 +57,20 @@ namespace vast {
     VID* var;
   };
 
+  class VImport : public VAST {
+  public:
+    VImport(string _path);
+    json toJson() override;
+    string path;
+  };
+
+  class VImportList : public VAST {
+  public:
+    VImportList(vector<VImport *> _imports);
+    json toJson() override;
+    vector<VImport *> imports;
+  };
+
   class VVarDeclList : public VAST {
   public:
     VVarDeclList(vector<VVarDecl*> _var_decs);
@@ -66,7 +80,8 @@ namespace vast {
 
   class VBehavioralSpec : public VAST {
   public:
-    VBehavioralSpec(VVarDeclList *_var_decs, VStatementExpr *_pre, VStatementExpr *_post);
+    VBehavioralSpec(VImportList *_imports, VVarDeclList *_var_decs, VStatementExpr *_pre, VStatementExpr *_post);
+    VImportList *imports;
     VVarDeclList *var_decs;
     VStatementExpr *pre;
     VStatementExpr *post;
@@ -75,7 +90,8 @@ namespace vast {
 
   class VTestSpec : public VAST {
   public:
-    VTestSpec(VVarDeclList *_var_decs, VStatementExpr *_init, VStatementExpr *_spec);
+    VTestSpec(VImportList *_imports, VVarDeclList *_var_decs, VStatementExpr *_init, VStatementExpr *_spec);
+    VImportList *imports;
     VVarDeclList *var_decs;
     VStatementExpr *init;
     VStatementExpr *spec;
@@ -84,7 +100,8 @@ namespace vast {
 
   class VTempSpec : public VAST {
   public:
-    VTempSpec(VVarDeclList *_var_decs, VStatementExpr *_fairness, VStatementExpr *_spec);
+    VTempSpec(VImportList *_imports, VVarDeclList *_var_decs, VStatementExpr *_fairness, VStatementExpr *_spec);
+    VImportList *imports;
     VVarDeclList *var_decs;
     VStatementExpr *fairness;
     VStatementExpr *spec;
@@ -93,7 +110,8 @@ namespace vast {
 
   class VInvSpec : public VAST {
   public:
-    VInvSpec(VVarDeclList *_var_decs, VStatementExpr *_inv);
+    VInvSpec(VImportList *_imports, VVarDeclList *_var_decs, VStatementExpr *_inv);
+    VImportList *imports;
     VVarDeclList *var_decs;
     VStatementExpr *inv;
     json toJson() override;

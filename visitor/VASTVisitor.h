@@ -18,9 +18,11 @@ namespace vastvisitor {
     VTestSpec* visitTestSpec(VParser::TestSpecContext *ctx);
     VTempSpec* visitTempSpec(VParser::TempSpecContext *ctx);
     VInvSpec* visitInvariantSpec(VParser::InvariantSpecContext *ctx);
+    VSynthSpec* visitSynthSpec(VParser::SynthSpecContext *ctx);
     VVarDeclList* visitVarsSection(VParser::VarsSectionContext *ctx);
     VStatementExpr* visitInitSection(VParser::InitSectionContext *ctx);
     VStatementExpr* visitSpecSection(VParser::SpecSectionContext *ctx);
+    VStatementExpr* visitSynthSection(VParser::SynthSectionContext *ctx);
     VStatementExpr* visitLtlFairnessSection(VParser::LtlFairnessSectionContext *ctx);
     VStatementExpr* visitLtlPropertySection(VParser::LtlPropertySectionContext *ctx);
     VStatementExpr* visitInvariantSection(VParser::InvariantSectionContext *ctx);

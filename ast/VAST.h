@@ -117,6 +117,17 @@ namespace vast {
     json toJson() override;
   };
 
+  class VSynthSpec: public VAST {
+  public:
+    VSynthSpec(VImportList *_imports, VVarDeclList *_var_decls, VStatementExpr *_init, VStatementExpr *_synth);
+    
+    VImportList *imports;
+    VVarDeclList *var_decls;
+    VStatementExpr *init;
+    VStatementExpr *synth;
+    json toJson() override;
+  };
+
   class VBinOp : public VAST {
   public:
     VBinOp(string _op);
@@ -242,9 +253,10 @@ namespace vast {
 
   class VConstExpr : public VConstraintExpr {
   public:
-    VConstExpr(string _val);
+    VConstExpr(string _type, string _val);
     ExprType exprType() override { return ExprType::CONST; }
     string val;
+    string type;
     json toJson() override;
   };
 

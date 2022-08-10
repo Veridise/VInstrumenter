@@ -16,6 +16,8 @@ namespace vastvisitor {
       return visitTempSpec(ctx->tempSpec());
     } else if (ctx->invariantSpec()) {
       return visitInvariantSpec(ctx->invariantSpec());
+    } else if (ctx->synthSpec()) {
+      return visitSynthSpec(ctx->synthSpec());
     }
 
     return nullptr;
@@ -103,6 +105,26 @@ namespace vastvisitor {
     return new VInvSpec(imports, var_decs, inv);
   }
 
+  VSynthSpec* VASTVisitor::visitSynthSpec(VParser::SynthSpecContext *ctx) {
+    VVarDeclList *var_decls = nullptr;
+    VImportList *imports = nullptr;
+    VStatementExpr *init = nullptr;
+    VStatementExpr *synth = nullptr;
+
+    if(ctx->imports()) {
+      imports = visitImports(ctx->imports());
+    }
+    if(ctx->varsSection()) {
+      var_decls = visitVarsSection(ctx->varsSection());
+    }
+    if(ctx->initSection()) {
+      init = visitInitSection(ctx->initSection());
+    }
+
+    synth = visitSynthSection(ctx->synthSection());
+    return new VSynthSpec(imports, var_decls, init, synth);
+  }
+
   VVarDeclList* VASTVisitor::visitVarsSection(VParser::VarsSectionContext *ctx) {
     return visitDeclList(ctx->declList());
   }
@@ -113,6 +135,10 @@ namespace vastvisitor {
 
   VStatementExpr* VASTVisitor::visitSpecSection(VParser::SpecSectionContext *ctx) {
     return visitSeqAtom(ctx->seqAtom());
+  }
+
+  VStatementExpr* VASTVisitor::visitSynthSection(VParser::SynthSectionContext *ctx) {
+    return visitAtom(ctx->atom());
   }
 
   VStatementExpr* VASTVisitor::visitLtlFairnessSection(VParser::LtlFairnessSectionContext *ctx) {
@@ -260,9 +286,10 @@ namespace vastvisitor {
           pre = visitConstraint(ctx->constraint()[0]);
           con = visitConstraint(ctx->constraint()[1]);
         }
-        else if(ctx->constraint()[0]) {
+        else if(ctx->constraint().size() > 0) {
           con = visitConstraint(ctx->constraint()[0]);
         }
+
       }
 
 
@@ -354,7 +381,7 @@ namespace vastvisitor {
     }
 
     if (ctx->NUM()) {
-      VConstExpr *expr = new VConstExpr(ctx->NUM()->getText());
+      VConstExpr *expr = new VConstExpr("int", ctx->NUM()->getText());
       args.push_back(expr);
     }
 
@@ -416,7 +443,7 @@ namespace vastvisitor {
 
   VConstraintExpr* VASTVisitor::visitVarOrNum(VParser::VarOrNumContext *ctx) {
     if (ctx->num()) {
-      return new VConstExpr(ctx->num()->NUM()->getText());
+      return new VConstExpr("int", ctx->num()->NUM()->getText());
     }
 
     if (ctx->varAccess()) {

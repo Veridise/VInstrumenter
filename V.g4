@@ -8,6 +8,7 @@ spec : behavioralSpec EOF
      | testSpec EOF 
      | tempSpec EOF 
      | invariantSpec EOF 
+     | synthSpec EOF
      ;
 
 
@@ -21,6 +22,9 @@ tempSpec       : imports varsSection? ltlFairnessSection? ltlPropertySection
                ;
 
 invariantSpec  : imports varsSection? invariantSection
+               ;
+
+synthSpec      : imports varsSection? initSection? synthSection
                ;
 
 imports : IMPORT PATH imports
@@ -44,6 +48,9 @@ initSection : INIT_LABEL seqAtom
 
 specSection : SPEC_LABEL seqAtom
             ;
+
+synthSection : SYNTH_LABEL atom
+             ;
 
 ltlFairnessSection : LTLFAIR_LABEL smartltlAtom
                    ;
@@ -201,6 +208,7 @@ PRECOND_LABEL : ('Pre:' | 'pre:'| 'Preconditions:' | 'preconditions:') ;
 POSTCOND_LABEL : ('Post:' | 'post:' | 'Postconditions:' | 'postconditions:') ;       
 INIT_LABEL : ('Init:' | 'init:' | 'Assume:' | 'assume:') ;       
 SPEC_LABEL : ('Spec:' | 'Specification:' | 'spec:' | 'specification:' | 'Assert:' | 'assert:') ;       
+SYNTH_LABEL: ('Synth:' | 'Synthesize:' | 'synth:' | 'synthesize:') ;
 LTLFAIR_LABEL : 'LTLFairness:' ;
 LTLPROP_LABEL : 'LTLProperty:' ;
 INV_LABEL : ('Inv:' | 'inv:' | 'Invariant:' | 'invariant:') ;

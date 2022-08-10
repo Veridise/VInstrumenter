@@ -110,6 +110,25 @@ namespace vast {
     return total;
   }
 
+  VSynthSpec::VSynthSpec(VImportList *_imports, VVarDeclList *_var_decls, VStatementExpr *_init, VStatementExpr *_synth) {
+    imports = _imports;
+    var_decls = _var_decls;
+    init = _init;
+    synth = _synth;
+  }
+  json VSynthSpec::toJson() {
+    json varsJson = {}; 
+    if (var_decls != nullptr) varsJson = var_decls->toJson();
+    json initJson = {}; 
+    if (init != nullptr) initJson = init->toJson();
+    json synthJson = synth->toJson();
+    json importsJson = imports->toJson();
+    json total = {
+      {"ntype", "VSynthSpec"}, {"imports", importsJson}, {"var_decls", varsJson}, {"init", initJson}, {"synth", synthJson}
+    };
+    return total;
+  }
+
   VVarDeclList::VVarDeclList(vector<VVarDecl*> _var_decs) {
     var_decs = _var_decs;
   }
@@ -355,11 +374,12 @@ namespace vast {
     return vVarExprJson;
   }
 
-  VConstExpr::VConstExpr(string _val) {
+  VConstExpr::VConstExpr(string _type, string _val) {
     val = _val;
+    type = _type;
   }
   json VConstExpr::toJson() {
-    return {{"ntype", "VConstExpr"}, {"val", val}};
+    return {{"ntype", "VConstExpr"}, {"litType", type}, {"val", val}};
   }
 
   VFieldAccessExpr::VFieldAccessExpr(VConstraintExpr *_expr, VID *_field) {

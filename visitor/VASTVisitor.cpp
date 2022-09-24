@@ -72,7 +72,8 @@ namespace vastvisitor {
       init = visitInitSection(ctx->initSection());
     }
     VStatementExpr *spec = visitSpecSection(ctx->specSection());
-    return new VTestSpec(imports, var_decs, init, spec);
+    auto *test = new VTestSpec(imports, var_decs, init, spec);
+    return test;
   }
 
   VTempSpec* VASTVisitor::visitTempSpec(VParser::TempSpecContext *ctx) {
@@ -134,7 +135,8 @@ namespace vastvisitor {
   }
 
   VStatementExpr* VASTVisitor::visitSpecSection(VParser::SpecSectionContext *ctx) {
-    return visitSeqAtom(ctx->seqAtom());
+    auto *seqAtom = visitSeqAtom(ctx->seqAtom());
+    return seqAtom;
   }
 
   VStatementExpr* VASTVisitor::visitSynthSection(VParser::SynthSectionContext *ctx) {
@@ -307,7 +309,23 @@ namespace vastvisitor {
     }
 
     if (ctx->LET()) {
-      // TODO
+        VAST *ident = nullptr;
+        VID *name = visitIdent(ctx->ident()[0]);
+        if(ctx->params()) {
+          VArgList *params = visitParams(ctx->params());
+          ident = new VFunctionID(nullptr, name, params);
+        }
+        else {
+          ident = name;
+        }
+
+        VConstraintExpr *body = visitConstraint(ctx->constraint()[0]);
+
+        if(ident == nullptr) {
+            throw runtime_error("null ident");
+        }
+
+        return new VLet(ident, body);
     }
 
     if (ctx->FOREACH()) {
@@ -410,7 +428,8 @@ namespace vastvisitor {
     }
 
     if (ctx->boolExpr()) {
-      return visitBoolExpr(ctx->boolExpr());
+      auto *expr = ctx->boolExpr();
+      return visitBoolExpr(expr);
     }
 
     return nullptr;
@@ -435,6 +454,15 @@ namespace vastvisitor {
       VConstraintExpr *lhs = visitArithExpr(ctx->arithExpr()[0]);
       VConstraintExpr *rhs = visitArithExpr(ctx->arithExpr()[1]);
       VBinOp *op = new VBinOp(ctx->C_BIN()->getText());
+
+      if(ctx->EXCEPT()) {
+        VArgList *args = visitArgList(ctx->argList());
+        if(args->args.size() == 0) {
+            throw runtime_error("Except list must have at least one entry");
+        }
+        return new VBinExpr(lhs, rhs, op, args);
+      }
+
       return new VBinExpr(lhs, rhs, op);
     }
 
@@ -445,7 +473,9 @@ namespace vastvisitor {
     if (ctx->num()) {
       return new VConstExpr("int", ctx->num()->NUM()->getText());
     }
-
+    /*if (ctx->fnCall()) {
+      return visitFnCall(ctx->fnCall());
+    }*/
     if (ctx->varAccess()) {
       return visitVarAccess(ctx->varAccess());
     }
@@ -577,12 +607,19 @@ namespace vastvisitor {
           op_str = ctx->A1_BIN()->getText();
         } else if (ctx->A2_BIN()) {
           op_str = ctx->A2_BIN()->getText();
+        } else if (ctx->A_UN()) {
+          op_str = ctx->A_UN()->getText();
+        } else if (ctx->WILDCARD()) {
+          op_str = ctx->WILDCARD()->getText();
         }
         VBinOp *op = new VBinOp(op_str);
         return new VBinExpr(a1, a2, op);
+      } else if (ctx->A_UN()) {
+        VUnOp *op = new VUnOp(ctx->A_UN()->getText());
+        return new VUnExpr(a1, op);
+      } else if (ctx->LPAREN()) {
+        return a1;
       }
-
-      return a1;
     }
 
     return nullptr;

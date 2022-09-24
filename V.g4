@@ -107,7 +107,8 @@ atom        : ATOM_PRE_LOC LPAREN atomFn COMMA constraint RPAREN
             | ATOM_POST_LOC LPAREN atomFn COMMA constraint PRE_SEP constraint RPAREN
             | ATOM_POST_LOC LPAREN atomFn COMMA constraint RPAREN
             | ATOM_POST_LOC LPAREN atomFn RPAREN
-            | LET LPAREN ident ASSN LBRACK params RBRACK RPAREN
+            | LET ident ASSN constraint
+            | LET ident LPAREN params RPAREN ASSN constraint
             | FOREACH LPAREN ident IN ident COMMA atom RPAREN
             | SENT LPAREN constraint RPAREN
             | LPAREN atom RPAREN
@@ -140,12 +141,16 @@ boolExpr    : varOrNum
             | L_UN boolExpr
             | LPAREN boolExpr RPAREN
             | arithExpr C_BIN arithExpr
+            | arithExpr C_BIN arithExpr EXCEPT argList
             ;
 
 arithExpr   : varOrNum
+            | A_UN arithExpr
             | LPAREN arithExpr RPAREN
             | arithExpr A1_BIN arithExpr
+            | arithExpr WILDCARD arithExpr
             | arithExpr A2_BIN arithExpr
+            | arithExpr A_UN arithExpr
             ;
 
 fnCall      : FSUM LPAREN atomFn COMMA varOrNum COMMA constraint RPAREN
@@ -202,6 +207,7 @@ LET      : 'let' ;
 FOREACH  : 'foreach' ;
 IN       : ':' ;
 IMPORT   : 'import:' ;
+EXCEPT   : 'except' ;
 
 VARS_LABEL : ('Vars:' | 'vars:' | 'Variables:' | 'variables:') ;       
 PRECOND_LABEL : ('Pre:' | 'pre:'| 'Preconditions:' | 'preconditions:') ;       
@@ -225,9 +231,9 @@ T_UN       : ('<>' | 'X') ; // also includes '[]' but necessary in types also so
 PATH       : '"'[@./][a-zA-Z0-9/._\-]+'"' ;
 IDENTIFIER : [a-zA-Z_][a-zA-Z_0-9]* ;
 
+A_UN       : '-';
 A1_BIN     : ('*' | '/') ;
 A2_BIN     : ('+' | '-') ;
-A_UN       : '-';
 C_BIN      : ('=' | '!=' | '<' | '>' | '<=' | '>=') ;
 L_BIN      : ('&&' | '||') ;
 L_UN       : '!' ;
@@ -236,6 +242,6 @@ NUM        : ([0-9]+ | [0-9]+ 'e' [0-9]+) ;
 
 NEWLINE    : ('\r'? '\n' | '\r')+ -> skip ;
 
-WHITESPACE : ' ' -> skip ;
+WHITESPACE : (' ' | '\t') -> skip ;
 LINE_COMMENT : '#' ~[\r\n]* -> skip ;
 

@@ -166,6 +166,15 @@ namespace vast {
     json toJson() override;
   };
 
+  class VLet : public VStatementExpr {
+  public:
+    VLet(VAST *lhs, VConstraintExpr *body);
+    json toJson() override;
+
+    VAST *lhs;
+    VConstraintExpr *body;
+  };
+
   class VArgList : public VAST {
   public:
     VArgList(vector<VConstraintExpr*> _args);
@@ -226,11 +235,12 @@ namespace vast {
 
   class VBinExpr : public VConstraintExpr {
   public:
-    VBinExpr(VConstraintExpr *_lhs, VConstraintExpr *_rhs, VBinOp *_op);
+    VBinExpr(VConstraintExpr *_lhs, VConstraintExpr *_rhs, VBinOp *_op, VArgList *except = nullptr);
     ExprType exprType() override { return ExprType::BIN; }
     VConstraintExpr *lhs;
     VConstraintExpr *rhs;
     VBinOp *op;
+    VArgList *except;
     json toJson() override;
   };
 

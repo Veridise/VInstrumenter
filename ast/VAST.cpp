@@ -191,6 +191,20 @@ namespace vast {
     return vBinStmtExprJson;
   }
 
+  VLet::VLet(VAST *lhs, VConstraintExpr *body) {
+    this->lhs = lhs;
+    this->body = body;
+  }
+
+  json VLet::toJson() {
+    json lhsJson = lhs->toJson();
+    json bodyJson = body->toJson();
+    json vLetJson {
+      {"ntype", "VLet"}, {"ident", lhsJson}, {"body", bodyJson}
+    };
+    return vLetJson;
+  }
+
   VBinOp::VBinOp(string _op) {
     op = _op;
   }
@@ -313,13 +327,20 @@ namespace vast {
   }
 
   json VFunctionID::toJson() {
-    json baseJson = base->toJson();
     json funcJson = fnName->toJson();
     json argsJson = {};
     if (args != nullptr) argsJson = args->toJson();
-    json vFunctionIDJson = {
-      {"ntype", "VFunctionID"}, {"base", baseJson}, {"func", funcJson}, {"args", argsJson}
-    };
+    json vFunctionIDJson;
+    if(base == nullptr) {
+        vFunctionIDJson = {
+           {"ntype", "VFunctionID"}, {"func", funcJson}, {"args", argsJson}
+        };
+    }
+    else {
+        vFunctionIDJson = {
+           {"ntype", "VFunctionID"}, {"base", base->toJson()}, {"func", funcJson}, {"args", argsJson}
+        };
+    }
     return vFunctionIDJson;
   }
 
@@ -337,17 +358,27 @@ namespace vast {
     return vArgListJson;
   }
 
-  VBinExpr::VBinExpr(VConstraintExpr *_lhs, VConstraintExpr *_rhs, VBinOp *_op) {
+  VBinExpr::VBinExpr(VConstraintExpr *_lhs, VConstraintExpr *_rhs, VBinOp *_op, VArgList *_except) {
     lhs = _lhs;
     rhs = _rhs;
     op = _op;
+    except = _except;
   }
   json VBinExpr::toJson() {
     json lhsJson = lhs->toJson();
     json rhsJson = rhs->toJson();
-    json vBinExprJson = {
-      {"ntype", "VBinExpr"}, {"lhs", lhsJson}, {"rhs", rhsJson}, {"op", op->op}
-    };
+    json vBinExprJson;
+    if(except == nullptr) {
+        vBinExprJson = {
+                {"ntype", "VBinExpr"}, {"lhs", lhsJson}, {"rhs", rhsJson}, {"op", op->op}
+        };
+    }
+    else {
+        vBinExprJson = {
+                {"ntype", "VBinExpr"}, {"lhs", lhsJson}, {"rhs", rhsJson}, {"op", op->op}, {"except", except->toJson()}
+        };
+    }
+
     return vBinExprJson;
   }
 

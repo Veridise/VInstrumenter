@@ -225,6 +225,14 @@ namespace vast {
     json toJson() override;
   };
 
+  class VRevertedIffStatement : public VStatementExpr {
+  public:
+    VRevertedIffStatement(VFunctionID *_fun, VConstraintExpr *_con);
+    VFunctionID *fun;
+    VConstraintExpr *con;
+    json toJson() override;
+  };
+
   class VWillSucceedStatement : public VStatementExpr {
   public:
     VWillSucceedStatement(VFunctionID *_fun, VConstraintExpr *_con);

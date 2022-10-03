@@ -108,7 +108,9 @@ atom        : ATOM_PRE_LOC LPAREN atomFn COMMA constraint RPAREN
             | ATOM_POST_LOC LPAREN atomFn COMMA constraint RPAREN
             | ATOM_POST_LOC LPAREN atomFn RPAREN
             | LET ident ASSN constraint
+            | LET ident ASSN arithExpr
             | LET ident LPAREN params RPAREN ASSN constraint
+            | LET ident LPAREN params RPAREN ASSN arithExpr
             | FOREACH LPAREN ident IN ident COMMA atom RPAREN
             | SENT LPAREN constraint RPAREN
             | LPAREN atom RPAREN
@@ -219,7 +221,7 @@ LTLFAIR_LABEL : 'LTLFairness:' ;
 LTLPROP_LABEL : 'LTLProperty:' ;
 INV_LABEL : ('Inv:' | 'inv:' | 'Invariant:' | 'invariant:') ;
 
-ATOM_PRE_LOC     : ('started' | 'reverted' | 'willSucceed') ;
+ATOM_PRE_LOC     : ('started' | 'reverted' | 'willSucceed' | 'revertedIff') ;
 ATOM_POST_LOC    : ('executed' | 'finished') ;
 CONTRACT_INV : 'Cinv' ;
 

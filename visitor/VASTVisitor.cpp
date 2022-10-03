@@ -303,6 +303,8 @@ namespace vastvisitor {
         return new VStartedStatement(fun, con);
       } else if (stmt_typ == "reverted") {
         return new VRevertedStatement(fun, con);
+      } else if (stmt_typ == "revertedIff") {
+        return new VRevertedIffStatement(fun, con);
       } else if (stmt_typ == "willSucceed") {
         return new VWillSucceedStatement(fun, con);
       }
@@ -319,7 +321,16 @@ namespace vastvisitor {
           ident = name;
         }
 
-        VConstraintExpr *body = visitConstraint(ctx->constraint()[0]);
+        VConstraintExpr *body = nullptr;
+        if(ctx->constraint().size() > 0) {
+            body = visitConstraint(ctx->constraint()[0]);
+        }
+        else if(ctx->arithExpr()) {
+            body = visitArithExpr(ctx->arithExpr());
+        }
+        else {
+            throw runtime_error("Rhs to let expression must be a constraint or an arithmetic expression");
+        }
 
         if(ident == nullptr) {
             throw runtime_error("null ident");

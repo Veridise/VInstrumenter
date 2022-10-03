@@ -292,6 +292,20 @@ namespace vast {
     return vStartedStmtJson;
   }
 
+  VRevertedIffStatement::VRevertedIffStatement(VFunctionID *_fun, VConstraintExpr *_con) {
+    fun = _fun;
+    con = _con;
+  }
+  json VRevertedIffStatement::toJson() {
+    json funJson = fun->toJson();
+    json conJson = {};
+    if (con != nullptr) conJson = con->toJson();
+    json vRevertedStmtJson = {
+      {"ntype", "VRevertedStatementExpr"}, {"fun", funJson}, {"con", conJson}
+    };
+    return vRevertedStmtJson;
+  }
+
   VRevertedStatement::VRevertedStatement(VFunctionID *_fun, VConstraintExpr *_con) {
     fun = _fun;
     con = _con;

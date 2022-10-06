@@ -301,7 +301,7 @@ namespace vast {
     json conJson = {};
     if (con != nullptr) conJson = con->toJson();
     json vRevertedStmtJson = {
-      {"ntype", "VRevertedStatementExpr"}, {"fun", funJson}, {"con", conJson}
+      {"ntype", "VRevertedIffStatementExpr"}, {"fun", funJson}, {"con", conJson}
     };
     return vRevertedStmtJson;
   }
